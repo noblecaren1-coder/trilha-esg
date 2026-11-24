@@ -245,7 +245,7 @@ details[open] summary::after{content:'−'}
       <div class="det">
         <ol>
           <li>Escolha jogar sozinho(a) ou em até 4 equipes. Cada equipe tem um peão com forma e número próprios.</li>
-          <li>Na sua vez, toque em <b>Rolar o dado</b> e avance as casas. Toque no guia para ver uma dica.</li>
+          <li>Na sua vez, toque em <b>Rolar o dado</b> e avance as casas. Toque na Tri para ver uma dica.</li>
           <li>A casa em que o peão para define a carta: pergunta de <b>E</b>, <b>S</b> ou <b>G</b>, carta de <b>Sorte ou revés</b> ou uma <b>Vivência</b> para conversar.</li>
           <li>Resposta certa vale 10 pontos. Cada pilar acertado pela primeira vez rende um selo. Os três selos juntos valem mais 15 pontos.</li>
           <li>Quem chega primeiro à casa final ganha bônus. As outras equipes completam a rodada, e vence quem somar mais pontos.</li>
@@ -272,7 +272,7 @@ details[open] summary::after{content:'−'}
           <li><b>Peões:</b> quatro formas numeradas.</li>
           <li><b>Dado:</b> dado digital de 6 faces.</li>
           <li><b>Marcadores de pontos:</b> placar e selos E, S e G.</li>
-          <li><b>Guia (avatar):</b> comenta as jogadas, dá dicas ao toque e descarta alternativas (uma vez por jogador, e a carta vale 5 pontos).</li>
+          <li><b>Tri (avatar guia):</b> comenta as jogadas, dá dicas ao toque e descarta alternativas (uma vez por jogador, e a carta vale 5 pontos).</li>
         </ul>
         <h3>Sugestão de debate final</h3>
         <ol>
@@ -672,7 +672,7 @@ function avatarSVG(m){
 }
 
 function makeGuia(msg, mood, grande){
-  const av = h('button',{type:'button',class:'av','aria-label':'Tocar no guia para ver uma dica'});
+  const av = h('button',{type:'button',class:'av','aria-label':'Tocar na Tri para ver uma dica'});
   const bal = h('div',{class:'balao',role:'status'});
   const el = h('div',{class:'guia'+(grande?' grande':'')}, av, bal);
   const g = { el, say(t, m){
@@ -720,7 +720,7 @@ document.querySelectorAll('#boxQtd [data-q]').forEach(b => b.addEventListener('c
 }));
 $('#modoSolo').addEventListener('click', () => setModo('solo'));
 $('#modoEquipes').addEventListener('click', () => setModo('equipes'));
-(function(){ const g = makeGuia('Oi! Eu sou o guia da Trilha ESG. Toque em mim para ver uma dica.','oi',true); const box=$('#guiaHome'); box.append(g.el, h('p',{class:'legenda-av',text:'Avatar ilustrativo gerado por IA'})); })();
+(function(){ const g = makeGuia('Oi! Eu sou a Tri, guia da Trilha ESG. Toque em mim para ver uma dica.','oi',true); const box=$('#guiaHome'); box.append(g.el, h('p',{class:'legenda-av',text:'Tri, avatar ilustrativo gerado por IA'})); })();
 $('#btnJogar').addEventListener('click', () => { renderNomes(); showScreen('setup'); });
 $('#setupVoltar').addEventListener('click', () => showScreen('home'));
 $('#btnComecar').addEventListener('click', () => {
@@ -935,16 +935,16 @@ async function cartaPergunta(p, k){
     ops.append(...btns);
     let dicaBtn = null;
     if(!p.hintUsed){
-      dicaBtn = h('button',{type:'button',class:'btn ghost block dica'}, miniAvatar('pensa'), h('span',{text:'Pedir dica ao guia (carta vale 5 pontos)'}));
+      dicaBtn = h('button',{type:'button',class:'btn ghost block dica'}, miniAvatar('pensa'), h('span',{text:'Pedir dica à Tri (carta vale 5 pontos)'}));
       dicaBtn.addEventListener('click', () => {
         if(respondeu) return;
         p.hintUsed = true; valor = 5;
         const erradas = btns.map((_,i)=>i).filter(i => !opts[i].ok);
         shuffle(erradas).slice(0, opts.length>=4 ? 2 : 1).forEach(i => {
           btns[i].disabled = true; btns[i].classList.add('riscada');
-          btns[i].lastChild.append(h('span',{class:'tag',text:'Descartada pelo guia'}));
+          btns[i].lastChild.append(h('span',{class:'tag',text:'Descartada pela Tri'}));
         });
-        dicaBtn.replaceWith(h('p',{class:'nota',role:'status',text:'Dica usada: tirei alternativas. Esta carta vale 5 pontos. Cada jogador tem uma dica por partida.'}));
+        dicaBtn.replaceWith(h('p',{class:'nota',role:'status',text:'Dica usada: a Tri tirou alternativas. Esta carta vale 5 pontos. Cada jogador tem uma dica por partida.'}));
         dicaBtn = null;
       });
     }
