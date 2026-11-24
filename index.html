@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trilha ESG</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;600;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: uma coluna no celular; no tablet deitado, tabuleiro à esquerda e painel à direita. Cores da identidade Cáren Noble. */
+:root{
+  --creme:#FFF9F2; --lavanda:#EEE6F3; --rosa:#F6D5CF; --ameixa:#5B2A6E; --ameixa-noite:#3A1A47;
+  --coral:#C2433A; --ambar:#F2A93B; --folha:#3F7D58; --tinta:#2B1E2F; --tinta-suave:#5E4E63;
+  --linha:#DCCFE3;
+  --display:'Lexend',system-ui,sans-serif; --corpo:'Atkinson Hyperlegible',system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--creme);color:var(--tinta);font-family:var(--corpo);font-size:18px;line-height:1.5;-webkit-text-size-adjust:100%}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.15}
+p{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+[hidden]{display:none!important}
+:focus-visible{outline:3px solid var(--coral);outline-offset:2px}
+.wrap{max-width:560px;margin:0 auto;padding:0 18px}
+
+/* botões */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:54px;padding:12px 22px;border:0;border-radius:18px;font-family:var(--display);font-weight:600;font-size:18px;background:var(--lavanda);color:var(--ameixa);text-align:center}
+.btn.primary{background:var(--ameixa);color:var(--creme)}
+.btn.coral{background:var(--coral);color:#fff}
+.btn.block{display:flex;width:100%}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:transparent;border:2px solid var(--linha);color:var(--ameixa)}
+
+/* telas */
+.screen{min-height:100%}
+#home{position:relative;overflow:hidden;padding-bottom:48px}
+.deco{position:absolute;border-radius:999px;pointer-events:none}
+.d1{width:220px;height:220px;background:var(--lavanda);right:-90px;top:-70px}
+.d2{width:150px;height:56px;background:var(--rosa);left:-50px;top:210px}
+.d3{width:120px;height:120px;background:var(--ambar);border-radius:120px 120px 0 0;right:-40px;top:300px;opacity:.9}
+.hero{position:relative;padding-top:44px}
+.marca{display:flex;gap:8px;margin-bottom:22px}
+.marca span{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:26px;color:#fff}
+.marca .e{background:var(--folha)} .marca .s{background:var(--coral)} .marca .g{background:var(--ameixa)}
+.hero h1{font-size:56px;color:var(--ameixa);letter-spacing:-.5px}
+.hero .lead{font-size:20px;margin:14px 0 24px;max-width:30ch;color:var(--tinta)}
+.hero .acoes{display:grid;gap:12px;max-width:380px}
+.pilares{display:grid;gap:12px;margin:36px 0 8px}
+.pilar-card{display:grid;grid-template-columns:52px 1fr;gap:14px;align-items:start;background:#fff;border:2px solid var(--linha);border-radius:20px;padding:14px 16px}
+.pilar-card .ic{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:26px;color:#fff}
+.pilar-card h3{font-size:20px;color:var(--ameixa);margin-bottom:2px}
+.pilar-card p{color:var(--tinta-suave);font-size:17px}
+details{background:#fff;border:2px solid var(--linha);border-radius:18px;margin-top:12px}
+summary{list-style:none;cursor:pointer;padding:16px 18px;font-family:var(--display);font-weight:600;font-size:18px;color:var(--ameixa);display:flex;justify-content:space-between;align-items:center;min-height:56px;border-radius:18px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:'+';font-size:26px;line-height:1;color:var(--coral)}
+details[open] summary::after{content:'−'}
+.det{padding:0 18px 18px;color:var(--tinta)}
+.det h3{font-size:17px;color:var(--ameixa);margin:14px 0 4px}
+.det ul,.det ol{margin:6px 0;padding-left:22px}
+.det li{margin:4px 0}
+.det small,.nota{color:var(--tinta-suave);font-size:16px}
+.rodape{margin-top:28px;color:var(--tinta-suave);font-size:16px}
+
+/* setup */
+.topo{display:flex;align-items:center;justify-content:space-between;padding:14px 0 6px}
+.topo h2{font-size:24px;color:var(--ameixa)}
+.painel{background:#fff;border:2px solid var(--linha);border-radius:22px;padding:18px;margin-top:14px}
+.painel h3{font-size:19px;color:var(--ameixa);margin-bottom:10px}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:8px}
+.seg button{min-height:54px;border-radius:14px;border:2px solid var(--linha);background:var(--creme);font-family:var(--display);font-weight:600;color:var(--tinta)}
+.seg button[aria-pressed="true"]{background:var(--ameixa);border-color:var(--ameixa);color:var(--creme)}
+.campo{display:grid;gap:6px;margin-top:12px}
+.campo label{font-weight:700;font-size:17px;display:flex;align-items:center;gap:10px}
+.campo input{min-height:52px;border-radius:14px;border:2px solid var(--linha);padding:10px 14px;font:inherit;background:var(--creme);color:var(--tinta)}
+
+/* jogo */
+#game .area{display:grid;gap:14px;padding-bottom:30px}
+.placar{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 6px;scroll-snap-type:x proximity}
+.chip{flex:0 0 auto;min-width:132px;background:#fff;border:2px solid var(--linha);border-radius:16px;padding:8px 12px;display:grid;gap:2px;scroll-snap-align:start}
+.chip.ativo{border-color:var(--ameixa);background:var(--lavanda)}
+.chip .nome{display:flex;align-items:center;gap:8px;font-weight:700;font-size:16px}
+.chip .pts{font-family:var(--display);font-weight:600;font-size:22px;color:var(--ameixa);font-variant-numeric:tabular-nums}
+.chip .pts small{font-family:var(--corpo);font-size:14px;color:var(--tinta-suave);font-weight:400}
+.selos{display:flex;gap:4px}
+.selo{width:24px;height:24px;border-radius:8px;display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:13px;border:2px dashed var(--linha);color:var(--tinta-suave);background:transparent}
+.selo.on.E{background:var(--folha);border:2px solid var(--folha);color:#fff}
+.selo.on.S{background:var(--coral);border:2px solid var(--coral);color:#fff}
+.selo.on.G{background:var(--ameixa);border:2px solid var(--ameixa);color:#fff}
+.vez{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:600;font-size:19px;color:var(--ameixa)}
+
+#boardBox{position:relative;width:100%;max-width:520px;margin:0 auto}
+#board{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:8px;background:var(--lavanda);border-radius:24px;position:relative}
+.tile{aspect-ratio:1/1;border-radius:14px;display:grid;place-items:center;position:relative;font-family:var(--display);font-weight:700;font-size:24px;line-height:1}
+.tile .n{position:absolute;left:6px;top:4px;font-size:12px;font-weight:500;opacity:.85}
+.tile .t{font-size:13px;font-weight:600;text-align:center;line-height:1.1;padding:0 2px}
+.tile.E{background:var(--folha);color:#fff}
+.tile.S{background:var(--coral);color:#fff}
+.tile.G{background:var(--ameixa);color:#fff}
+.tile.L{background:var(--ambar);color:var(--tinta)}
+.tile.V{background:var(--rosa);color:var(--tinta)}
+.tile.start,.tile.end{background:var(--creme);color:var(--ameixa);border:3px solid var(--ameixa)}
+#pawns{position:absolute;inset:0;pointer-events:none}
+.pawn{position:absolute;display:grid;place-items:center;transition:left .17s ease,top .17s ease;filter:drop-shadow(1.5px 0 0 var(--ol)) drop-shadow(-1.5px 0 0 var(--ol)) drop-shadow(0 1.5px 0 var(--ol)) drop-shadow(0 -1.5px 0 var(--ol))}
+.pawn .sh{width:100%;height:100%;display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:14px}
+.shape-0 .sh{border-radius:50%} .shape-1 .sh{border-radius:22%}
+.shape-2 .sh{clip-path:polygon(50% 4%,97% 92%,3% 92%);padding-top:28%}
+.shape-3 .sh{clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
+.p0{--bg:#2B1E2F;--fg:#fff;--ol:#fff} .p1{--bg:#FFFFFF;--fg:#2B1E2F;--ol:#2B1E2F} .p2{--bg:#3A6FB7;--fg:#fff;--ol:#fff} .p3{--bg:#8C8794;--fg:#fff;--ol:#fff}
+.pawn .sh{background:var(--bg);color:var(--fg)}
+.mini{display:inline-grid;place-items:center;width:22px;height:22px;flex:0 0 auto;filter:drop-shadow(1px 0 0 var(--ol)) drop-shadow(-1px 0 0 var(--ol)) drop-shadow(0 1px 0 var(--ol)) drop-shadow(0 -1px 0 var(--ol))}
+.mini .sh{width:100%;height:100%;display:grid;place-items:center;font-size:11px;font-family:var(--display);font-weight:700;background:var(--bg);color:var(--fg)}
+.mini.shape-0 .sh{border-radius:50%} .mini.shape-1 .sh{border-radius:22%}
+.mini.shape-2 .sh{clip-path:polygon(50% 4%,97% 92%,3% 92%);padding-top:28%}
+.mini.shape-3 .sh{clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
+
+.comandos{display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:center;background:#fff;border:2px solid var(--linha);border-radius:22px;padding:14px}
+.die{width:84px;height:84px;border-radius:20px;background:var(--creme);border:3px solid var(--ameixa);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);padding:10px;gap:2px}
+.die i{display:block;width:14px;height:14px;border-radius:50%;background:transparent;place-self:center}
+.die i.on{background:var(--ameixa)}
+.die.rolando{animation:bal .35s linear infinite}
+@keyframes bal{0%{transform:rotate(-8deg)}50%{transform:rotate(8deg) translateY(-3px)}100%{transform:rotate(-8deg)}}
+.legenda{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:16px;color:var(--tinta-suave)}
+.legenda span{display:inline-flex;align-items:center;gap:6px}
+.legenda b{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:8px;font-family:var(--display);font-size:13px;color:#fff}
+.legenda .L b{background:var(--ambar);color:var(--tinta)} .legenda .V b{background:var(--rosa);color:var(--tinta)}
+
+/* cartas (folha inferior) */
+.sheet-wrap{position:fixed;inset:0;background:rgba(43,30,47,.5);display:flex;align-items:flex-end;justify-content:center;z-index:20}
+.sheet{width:100%;max-width:600px;max-height:92%;overflow-y:auto;background:var(--creme);border-radius:28px 28px 0 0;padding:0 0 22px;animation:sobe .22s ease-out}
+@keyframes sobe{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+.faixa{display:flex;align-items:center;gap:12px;padding:16px 20px;border-radius:28px 28px 0 0;color:#fff;font-family:var(--display);font-weight:600;font-size:18px}
+.faixa .letra{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.22);display:grid;place-items:center;font-weight:700;font-size:20px}
+.faixa.E{background:var(--folha)} .faixa.S{background:var(--coral)} .faixa.G{background:var(--ameixa)}
+.faixa.L{background:var(--ambar);color:var(--tinta)} .faixa.L .letra{background:rgba(43,30,47,.12)}
+.faixa.V{background:var(--rosa);color:var(--tinta)} .faixa.V .letra{background:rgba(43,30,47,.1)}
+.faixa.M{background:var(--ameixa)}
+.corpo{padding:18px 20px 0;display:grid;gap:14px}
+.corpo h3{font-size:22px;color:var(--ameixa)}
+.pergunta{font-size:20px;line-height:1.4}
+.ops{display:grid;gap:10px}
+.opt{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start;text-align:left;min-height:56px;padding:12px 14px;border-radius:16px;border:2px solid var(--linha);background:#fff;font-size:18px;line-height:1.35}
+.opt .k{width:30px;height:30px;border-radius:50%;background:var(--lavanda);display:grid;place-items:center;font-family:var(--display);font-weight:600;font-size:15px;color:var(--ameixa)}
+.opt.ok{border-color:var(--folha);background:#EAF3EC}
+.opt.ok .k{background:var(--folha);color:#fff}
+.opt.no{border-color:var(--coral);background:#FBE9E6}
+.opt.no .k{background:var(--coral);color:#fff}
+.opt .tag{display:block;font-family:var(--display);font-weight:600;font-size:14px;margin-top:2px}
+.opt.ok .tag{color:var(--folha)} .opt.no .tag{color:var(--coral)}
+.opt:disabled{cursor:default}
+.feedback{border-radius:18px;padding:14px 16px;background:var(--lavanda)}
+.feedback .tit{font-family:var(--display);font-weight:600;font-size:19px;color:var(--ameixa);margin-bottom:4px}
+.feedback .ref{display:block;margin-top:8px;font-size:15px;color:var(--tinta-suave)}
+.efeito{display:inline-block;background:var(--ameixa);color:var(--creme);border-radius:999px;padding:6px 14px;font-family:var(--display);font-weight:600;font-size:16px}
+.timer{font-family:var(--display);font-weight:600;font-size:32px;color:var(--ameixa);text-align:center;font-variant-numeric:tabular-nums}
+.acoes2{display:grid;gap:10px}
+
+/* resultados */
+.rank{display:grid;gap:12px;margin-top:6px}
+.rk{background:#fff;border:2px solid var(--linha);border-radius:20px;padding:14px 16px;display:grid;gap:10px}
+.rk.top{border-color:var(--ameixa);background:var(--lavanda)}
+.rk .lin{display:flex;align-items:center;gap:10px;justify-content:space-between}
+.rk .nm{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:600;font-size:19px}
+.rk .tot{font-family:var(--display);font-weight:700;font-size:28px;color:var(--ameixa);font-variant-numeric:tabular-nums}
+.barra{display:grid;grid-template-columns:30px 1fr 56px;gap:10px;align-items:center;font-size:16px}
+.barra .tr{height:14px;background:var(--lavanda);border-radius:99px;overflow:hidden}
+.rk.top .barra .tr{background:#fff}
+.barra .pr{height:100%;border-radius:99px}
+.barra .pr.E{background:var(--folha)} .barra .pr.S{background:var(--coral)} .barra .pr.G{background:var(--ameixa)}
+.barra b{font-family:var(--display);color:var(--ameixa)}
+.compr{display:grid;gap:10px}
+.compr button{text-align:left;min-height:56px;padding:12px 14px;border-radius:16px;border:2px solid var(--linha);background:#fff;font-size:18px;line-height:1.35}
+.compr button[aria-pressed="true"]{border-color:var(--ameixa);background:var(--lavanda)}
+.cert{background:var(--creme);border:3px solid var(--ameixa);border-radius:22px;padding:18px;margin-top:14px;display:grid;gap:8px}
+.cert h3{color:var(--ameixa);font-size:20px}
+.cert .txt{font-size:20px;line-height:1.4}
+#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--tinta);color:var(--creme);padding:12px 18px;border-radius:999px;font-family:var(--display);font-weight:500;font-size:16px;z-index:40;max-width:90%;text-align:center}
+
+@media (min-width:860px) and (orientation:landscape){
+  .wrap.game{max-width:1080px}
+  #game .area{grid-template-columns:minmax(0,1fr) 380px;align-items:start;gap:22px}
+  #game .lado{display:grid;gap:14px}
+  .placar{flex-wrap:wrap;overflow:visible}
+  .sheet-wrap{align-items:center}
+  .sheet{border-radius:28px;max-height:88%}
+  .faixa{border-radius:28px 28px 0 0}
+}
+@media (prefers-reduced-motion:reduce){
+  .pawn{transition:none}.die.rolando{animation:none}.sheet{animation:none}
+}
+</style>
+</head>
+<body>
+
+<!-- INÍCIO -->
+<main id="home" class="screen">
+  <div class="deco d1"></div><div class="deco d2"></div><div class="deco d3"></div>
+  <div class="wrap">
+    <div class="hero">
+      <div class="marca" aria-hidden="true"><span class="e">E</span><span class="s">S</span><span class="g">G</span></div>
+      <h1>Trilha ESG</h1>
+      <p class="lead">ESG nos serviços de saúde: um jogo de percurso para decidir bem pelo ambiente, pelas pessoas e pela instituição.</p>
+      <div class="acoes">
+        <button class="btn primary block" id="btnJogar" type="button">Jogar agora</button>
+      </div>
+    </div>
+
+    <div class="pilares">
+      <div class="pilar-card"><div class="ic" style="background:var(--folha)">E</div><div><h3>Ambiental</h3><p>Resíduos, água, energia e clima nas unidades e hospitais.</p></div></div>
+      <div class="pilar-card"><div class="ic" style="background:var(--coral)">S</div><div><h3>Social</h3><p>Acesso, equidade, humanização e saúde de quem cuida.</p></div></div>
+      <div class="pilar-card"><div class="ic" style="background:var(--ameixa)">G</div><div><h3>Governança</h3><p>Ética, segurança do paciente, proteção de dados e prestação de contas.</p></div></div>
+    </div>
+
+    <details>
+      <summary>Como jogar</summary>
+      <div class="det">
+        <ol>
+          <li>Escolha jogar sozinho(a) ou em até 4 equipes. Cada equipe tem um peão com forma e número próprios.</li>
+          <li>Na sua vez, toque em <b>Rolar o dado</b> e avance as casas.</li>
+          <li>A casa em que o peão para define a carta: pergunta de <b>E</b>, <b>S</b> ou <b>G</b>, carta de <b>Sorte ou revés</b> ou uma <b>Vivência</b> para conversar.</li>
+          <li>Resposta certa vale 10 pontos. Cada pilar acertado pela primeira vez rende um selo. Os três selos juntos valem mais 15 pontos.</li>
+          <li>Quem chega primeiro à casa final ganha bônus. As outras equipes completam a rodada, e vence quem somar mais pontos.</li>
+        </ol>
+        <p class="nota">Toda carta, certa ou errada, traz uma explicação curta. Leia em voz alta com a equipe.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Para o docente</summary>
+      <div class="det">
+        <h3>Objetivo</h3>
+        <p>Compreender os pilares ambiental, social e de governança (ESG) e como eles orientam decisões nos serviços de saúde, do cuidado à gestão.</p>
+        <h3>Competências trabalhadas</h3>
+        <ul>
+          <li><b>Conhecimentos:</b> pilares do ESG, normas dos serviços de saúde, ODS.</li>
+          <li><b>Habilidades:</b> analisar situações do cotidiano, decidir com base em normas e evidências, explicar com linguagem acessível.</li>
+          <li><b>Atitudes:</b> responsabilidade socioambiental, equidade, ética e transparência.</li>
+        </ul>
+        <h3>Componentes do jogo de percurso</h3>
+        <ul>
+          <li><b>Tabuleiro:</b> trilha de 25 casas, do Início ao Relatório ESG.</li>
+          <li><b>Cartas de desafio e de sorte:</b> 30 perguntas, 10 cartas de sorte ou revés e 6 vivências.</li>
+          <li><b>Peões:</b> quatro formas numeradas.</li>
+          <li><b>Dado:</b> dado digital de 6 faces.</li>
+          <li><b>Marcadores de pontos:</b> placar e selos E, S e G.</li>
+        </ul>
+        <h3>Sugestão de debate final</h3>
+        <ol>
+          <li>Qual carta mais se parece com algo que você já viveu?</li>
+          <li>Que decisão de ESG está ao seu alcance amanhã?</li>
+          <li>Como aplicar essa decisão no serviço onde você atua?</li>
+        </ol>
+        <p class="nota">As cartas ficam no início do código da página, em listas simples, e podem ser editadas. Uma partida leva em torno de 10 a 25 minutos, conforme o número de equipes (estimativa).</p>
+        <h3>Uso de inteligência artificial</h3>
+        <p>Jogo elaborado com apoio de IA (Claude, Anthropic). As cartas devem ser conferidas e validadas pelas autoras antes do uso em aula.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Normas e fontes das cartas</summary>
+      <div class="det">
+        <ul>
+          <li>Brasil. Anvisa. RDC nº 222, de 28 de março de 2018 (resíduos de serviços de saúde).</li>
+          <li>Brasil. Lei nº 12.305, de 2 de agosto de 2010 (Política Nacional de Resíduos Sólidos).</li>
+          <li>Brasil. Ministério do Trabalho. NR-32 (segurança e saúde no trabalho em serviços de saúde).</li>
+          <li>Brasil. Lei nº 13.146, de 6 de julho de 2015 (Lei Brasileira de Inclusão).</li>
+          <li>Brasil. Lei nº 13.709, de 14 de agosto de 2018 (LGPD).</li>
+          <li>Brasil. Lei nº 12.527, de 18 de novembro de 2011 (Lei de Acesso à Informação).</li>
+          <li>Brasil. Ministério da Saúde. Portaria nº 1.820, de 13 de agosto de 2009 (direitos e deveres dos usuários da saúde).</li>
+          <li>Conselho Federal de Enfermagem. Resolução Cofen nº 564, de 6 de dezembro de 2017 (Código de Ética).</li>
+          <li>Conselho Nacional de Saúde. Resolução CNS nº 466, de 12 de dezembro de 2012 (pesquisa com seres humanos).</li>
+          <li>ONU. Pacto Global. Relatório Who Cares Wins (2004) e Objetivos de Desenvolvimento Sustentável.</li>
+        </ul>
+      </div>
+    </details>
+    <p class="rodape">Atividade da disciplina ENF-51 Estágio Docente, Programa de Pós-graduação em Enfermagem.</p>
+  </div>
+</main>
+
+<!-- PREPARAR PARTIDA -->
+<main id="setup" class="screen" hidden>
+  <div class="wrap">
+    <div class="topo"><h2>Nova partida</h2><button class="btn ghost" id="setupVoltar" type="button">Voltar</button></div>
+    <div class="painel">
+      <h3>Como vocês vão jogar?</h3>
+      <div class="seg" role="group" aria-label="Modo de jogo">
+        <button type="button" id="modoSolo" aria-pressed="true">Sozinho(a)</button>
+        <button type="button" id="modoEquipes" aria-pressed="false">Em equipes</button>
+      </div>
+      <div id="boxQtd" hidden style="margin-top:14px">
+        <h3 style="font-size:17px">Quantas equipes?</h3>
+        <div class="seg" role="group" aria-label="Número de equipes">
+          <button type="button" data-q="2" aria-pressed="true">2</button>
+          <button type="button" data-q="3" aria-pressed="false">3</button>
+          <button type="button" data-q="4" aria-pressed="false">4</button>
+        </div>
+      </div>
+    </div>
+    <div class="painel">
+      <h3>Nomes</h3>
+      <div id="nomes"></div>
+    </div>
+    <div style="margin-top:16px"><button class="btn primary block" id="btnComecar" type="button">Começar a trilha</button></div>
+  </div>
+</main>
+
+<!-- JOGO -->
+<main id="game" class="screen" hidden>
+  <div class="wrap game">
+    <div class="topo"><h2>Trilha ESG</h2><button class="btn ghost" id="btnSair" type="button">Encerrar</button></div>
+    <div class="area">
+      <div class="col-tab">
+        <div id="boxTab"><div id="boxBoard" style="position:relative"></div></div>
+      </div>
+      <div class="lado">
+        <div class="placar" id="placar" aria-label="Placar"></div>
+        <div class="comandos">
+          <div class="die" id="die" aria-hidden="true"></div>
+          <div>
+            <div class="vez" id="vez"></div>
+            <button class="btn primary block" id="btnRolar" type="button" style="margin-top:8px">Rolar o dado</button>
+          </div>
+        </div>
+        <div class="legenda" aria-label="Legenda das casas">
+          <span><b style="background:var(--folha)">E</b>Ambiental</span>
+          <span><b style="background:var(--coral)">S</b>Social</span>
+          <span><b style="background:var(--ameixa)">G</b>Governança</span>
+          <span class="L"><b>★</b>Sorte ou revés</span>
+          <span class="V"><b>✎</b>Vivência</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- RESULTADOS -->
+<main id="results" class="screen" hidden>
+  <div class="wrap">
+    <div class="topo"><h2 id="resTitulo">Fim da trilha</h2></div>
+    <p id="resSub" class="nota" style="margin-bottom:4px"></p>
+    <div class="rank" id="rank"></div>
+    <div class="painel">
+      <h3>Escolha um compromisso ESG para levar</h3>
+      <div class="compr" id="compr"></div>
+      <div class="cert" id="cert" hidden>
+        <h3>Meu compromisso ESG</h3>
+        <p class="txt" id="certTxt"></p>
+        <button class="btn block" id="btnCopiar" type="button">Copiar texto</button>
+      </div>
+    </div>
+    <div style="display:grid;gap:10px;margin:18px 0 40px">
+      <button class="btn primary block" id="btnDeNovo" type="button">Jogar de novo</button>
+      <button class="btn block" id="btnInicio" type="button">Voltar ao início</button>
+    </div>
+  </div>
+</main>
+
+<div class="sheet-wrap" id="sheetWrap" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitulo" id="sheet"><div id="sheetBody"></div></div>
+</div>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+/* =========================================================
+   CONTEÚDO (edite aqui). Em cada pergunta, a PRIMEIRA opção
+   é a correta; o jogo embaralha as opções a cada sorteio.
+   ========================================================= */
+const PIL = {
+  E:{nome:'Ambiental', letra:'E'},
+  S:{nome:'Social', letra:'S'},
+  G:{nome:'Governança', letra:'G'}
+};
+
+const PERGUNTAS = {
+E:[
+ {q:'Ao terminar uma punção, onde descartar a agulha usada?',
+  o:['No coletor rígido para perfurocortantes, sem reencapar','No saco branco leitoso, junto com a gaze','Na lixeira comum, depois de recolocar a tampa da agulha'],
+  e:'Perfurocortantes (Grupo E) vão em coletor rígido, resistente a perfuração e vazamento, preenchido até 3/4 da capacidade. Reencapar agulhas aumenta o risco de acidente.',
+  r:'Anvisa, RDC 222/2018; NR-32'},
+ {q:'Qual é o saco usado para resíduos infectantes do Grupo A?',
+  o:['Branco leitoso, com símbolo de substância infectante','Preto, igual ao do lixo comum','Azul, igual ao dos recicláveis'],
+  e:'O Grupo A é acondicionado em saco branco leitoso identificado. Misturar resíduos comuns nele aumenta o volume que precisa de tratamento.',
+  r:'Anvisa, RDC 222/2018'},
+ {q:'Uma embalagem plástica limpa de insumo, sem contato com fluidos de pacientes, deve ir para:',
+  o:['A coleta seletiva de recicláveis (Grupo D)','O saco branco leitoso infectante','O coletor de perfurocortantes'],
+  e:'Resíduos comuns recicláveis seguem a coleta seletiva. Segregar certo na origem reduz custo e impacto ambiental.',
+  r:'Anvisa, RDC 222/2018'},
+ {q:'O que é o PGRSS?',
+  o:['O plano que descreve como o serviço gerencia seus resíduos, da geração à destinação final','Um programa de benefícios para servidores','Um protocolo de higiene das mãos'],
+  e:'Plano de Gerenciamento de Resíduos de Serviços de Saúde: documento exigido dos serviços geradores de resíduos.',
+  r:'Anvisa, RDC 222/2018'},
+ {q:'Qual é a ordem de prioridade da Política Nacional de Resíduos Sólidos?',
+  o:['Não gerar, reduzir, reutilizar, reciclar e só então tratar e dispor os rejeitos','Reciclar, depois reduzir e, por último, não gerar','Coletar, aterrar e esquecer'],
+  e:'A prioridade é evitar gerar resíduos. A disposição final fica apenas para os rejeitos.',
+  r:'Lei 12.305/2010'},
+ {q:'A unidade quer economizar água. Qual medida mantém a segurança do paciente?',
+  o:['Consertar vazamentos e torneiras defeituosas, mantendo a higiene das mãos','Reduzir a frequência de higiene das mãos','Reutilizar materiais de uso único'],
+  e:'Sustentabilidade nunca reduz segurança. Economize onde há desperdício (vazamentos), jamais na higiene das mãos ou reutilizando produto de uso único.',
+  r:'Boas práticas de segurança do paciente'},
+ {q:'Como as mudanças climáticas afetam o trabalho da enfermagem?',
+  o:['Calor extremo, enchentes e doenças sensíveis ao clima aumentam a demanda por cuidado','Não têm relação com a saúde','Afetam só áreas sem serviços de saúde'],
+  e:'Eventos climáticos extremos pressionam os serviços e agravam desigualdades. Preparar equipes e unidades faz parte do cuidado.',
+  r:'Organização Mundial da Saúde'},
+ {q:'Um hospital se diz "100% sustentável", mas não mostra dados nem metas. Isso lembra:',
+  o:['Greenwashing, ou propaganda ambiental sem comprovação','Governança exemplar','Uma auditoria independente'],
+  e:'Greenwashing é divulgar atitudes ambientais que não são comprovadas. Metas, indicadores e relatórios abertos são o antídoto.',
+  r:'Conceito de ESG'},
+ {q:'Medicamentos vencidos do estoque da unidade devem:',
+  o:['Seguir o fluxo definido no PGRSS, sem ir para pia, vaso ou lixo comum','Ser descartados na pia para não acumular','Ir para o lixo comum, bem embrulhados'],
+  e:'Fármacos na água e no solo contaminam o ambiente. O PGRSS define o destino de cada tipo de medicamento.',
+  r:'Anvisa, RDC 222/2018'},
+ {q:'Qual Objetivo de Desenvolvimento Sustentável trata da ação contra a mudança global do clima?',
+  o:['ODS 13','ODS 3','ODS 16'],
+  e:'ODS 13: ação contra a mudança global do clima. O ODS 3 é saúde e bem-estar e o ODS 16 é paz, justiça e instituições eficazes.',
+  r:'ONU, Agenda 2030'}
+],
+S:[
+ {q:'Qual Objetivo de Desenvolvimento Sustentável trata de saúde e bem-estar?',
+  o:['ODS 3','ODS 13','ODS 4'],
+  e:'ODS 3: assegurar vidas saudáveis e promover o bem-estar para todas as pessoas, em todas as idades.',
+  r:'ONU, Agenda 2030'},
+ {q:'Qual princípio do SUS orienta oferecer mais a quem mais precisa, para reduzir desigualdades?',
+  o:['Equidade','Descentralização','Hierarquização'],
+  e:'Equidade reconhece que pessoas em situações diferentes precisam de apoios diferentes para alcançar o mesmo direito à saúde.',
+  r:'Lei 8.080/1990'},
+ {q:'Qual norma regulamentadora trata da segurança e saúde no trabalho em serviços de saúde?',
+  o:['NR-32','NR-10','NR-35'],
+  e:'A NR-32 cobre riscos biológicos, químicos, de radiação e de perfurocortantes, entre outros, para quem trabalha em saúde.',
+  r:'NR-32'},
+ {q:'Qual lei assegura direitos e acessibilidade à pessoa com deficiência?',
+  o:['Lei Brasileira de Inclusão (Lei 13.146/2015)','Lei de Acesso à Informação','Lei Geral de Proteção de Dados'],
+  e:'A Lei Brasileira de Inclusão, ou Estatuto da Pessoa com Deficiência, trata de acessibilidade, atendimento prioritário e não discriminação.',
+  r:'Lei 13.146/2015'},
+ {q:'Uma pessoa trans pede para ser chamada pelo nome social. A conduta alinhada ao pilar Social é:',
+  o:['Chamar pelo nome social e registrar conforme as normas do serviço','Usar só o nome do registro civil','Pedir comprovante antes de respeitar o pedido'],
+  e:'A Portaria 1.820/2009 assegura o uso do nome de preferência e prevê campo para o nome social nos documentos do usuário.',
+  r:'Portaria MS 1.820/2009'},
+ {q:'Qual conjunto de indicadores pertence ao pilar Social de uma instituição?',
+  o:['Condições de trabalho, saúde dos trabalhadores, diversidade e relação com a comunidade','Consumo de água e de energia','Código de conduta e canal de denúncias'],
+  e:'Consumo de recursos é Ambiental. Código de conduta e canal de denúncias são Governança.',
+  r:'Conceito de ESG'},
+ {q:'Para garantir que o paciente entendeu a orientação de alta, o melhor é:',
+  o:['Usar linguagem simples e pedir que ele explique com as próprias palavras','Falar rápido, com termos técnicos, para ganhar tempo','Entregar um folheto e dispensar a conversa'],
+  e:'Pedir que a pessoa repita com as próprias palavras (teach-back) confirma a compreensão e promove equidade em saúde.',
+  r:'Letramento em saúde'},
+ {q:'Na Política Nacional de Humanização, acolhimento significa:',
+  o:['Escutar, reconhecer a necessidade e responsabilizar-se pelo cuidado','Apenas receber na porta e entregar uma senha','Atender somente quem tem agendamento'],
+  e:'Acolhimento é uma postura de escuta qualificada e de responsabilização ao longo de todo o cuidado, não só uma etapa da recepção.',
+  r:'Política Nacional de Humanização'},
+ {q:'Uma unidade básica amplia o horário de atendimento e faz busca ativa de quem mais falta às consultas. Isso fortalece qual pilar?',
+  o:['Social, pelo acesso e pela equidade','Ambiental, pela redução de resíduos','Apenas a Governança'],
+  e:'Ampliar o acesso e buscar quem mais precisa são ações sociais que reduzem barreiras ao cuidado.',
+  r:'Conceito de ESG; princípios do SUS'},
+ {q:'Qual medida cuida de quem cuida?',
+  o:['Dimensionar a equipe de forma adequada e garantir pausas de descanso','Aumentar horas extras para cobrir faltas','Evitar conversas sobre sofrimento no trabalho'],
+  e:'Dimensionamento adequado e boas condições de trabalho reduzem sobrecarga e adoecimento, e protegem também a segurança do paciente.',
+  r:'Parâmetros de dimensionamento da enfermagem (Cofen)'}
+],
+G:[
+ {q:'O termo ESG foi popularizado, em 2004, por qual iniciativa?',
+  o:['O relatório Who Cares Wins, do Pacto Global da ONU','A Constituição Federal de 1988','O Código de Ética da Enfermagem'],
+  e:'Who Cares Wins propôs integrar fatores ambientais, sociais e de governança às decisões de investimento e de gestão.',
+  r:'ONU, Pacto Global (2004)'},
+ {q:'Qual documento orienta a conduta ética dos profissionais de enfermagem no Brasil?',
+  o:['Código de Ética dos Profissionais de Enfermagem (Resolução Cofen 564/2017)','Estatuto da Cidade','Regimento do Conselho Nacional de Justiça'],
+  e:'O Código de Ética define princípios, direitos, deveres e proibições. É base de governança profissional.',
+  r:'Resolução Cofen 564/2017'},
+ {q:'Você fotografou o prontuário para tirar uma dúvida e quer enviar a um grupo de mensagens. O que fazer?',
+  o:['Não enviar. Dados de saúde são sensíveis; use os canais institucionais autorizados','Enviar, se cobrir o nome do paciente','Enviar, porque é só um grupo de colegas'],
+  e:'Dados de saúde são dados pessoais sensíveis. Compartilhar só o necessário, pelos meios autorizados, protege o paciente e a instituição.',
+  r:'Lei 13.709/2018 (LGPD)'},
+ {q:'Qual mecanismo de governança permite relatar irregularidades com segurança?',
+  o:['Canal de denúncias ou ouvidoria','Mural de avisos','Escala de plantão'],
+  e:'Canais de denúncia e ouvidoria, com proteção a quem relata, ajudam a corrigir problemas cedo.',
+  r:'Boas práticas de governança'},
+ {q:'Você percebe um erro de medicação que chegou ao paciente. A conduta alinhada à boa governança é:',
+  o:['Cuidar do paciente, notificar o incidente e analisar as causas sem buscar culpados','Corrigir em silêncio para evitar problemas','Culpar o colega do turno anterior'],
+  e:'Notificar e aprender com os incidentes é prática de cultura de segurança. O foco é o sistema, não a punição.',
+  r:'Programa Nacional de Segurança do Paciente'},
+ {q:'Antes de iniciar uma pesquisa com pacientes no serviço, é preciso:',
+  o:['Aprovação em comitê de ética e consentimento livre e esclarecido dos participantes','Apenas a autorização verbal do chefe do setor','Nada, se os dados forem anônimos depois'],
+  e:'A Resolução 466/2012 exige consentimento livre e esclarecido e a análise ética do projeto por um comitê de ética em pesquisa.',
+  r:'Resolução CNS 466/2012'},
+ {q:'Um profissional que participa da compra de insumos recebe brindes de um fornecedor concorrente. O que a boa governança pede?',
+  o:['Declarar o conflito de interesses e se afastar da decisão','Aceitar, se o brinde for pequeno','Ocultar para evitar fofoca'],
+  e:'Conflito de interesses deve ser declarado e gerenciado. Transparência protege as decisões e as pessoas.',
+  r:'Boas práticas de integridade'},
+ {q:'Qual ferramenta comunica o desempenho ESG de uma instituição com indicadores e metas?',
+  o:['Relatório de sustentabilidade, por exemplo no padrão GRI','Folder de propaganda','Cartaz de campanha'],
+  e:'Relatórios com indicadores comparáveis, metas e prestação de contas dão credibilidade e evitam o greenwashing.',
+  r:'Global Reporting Initiative'},
+ {q:'Qual lei garante o direito de acesso a informações públicas?',
+  o:['Lei de Acesso à Informação (Lei 12.527/2011)','Lei Brasileira de Inclusão','Política Nacional de Resíduos Sólidos'],
+  e:'A LAI estabelece que a transparência é a regra e o sigilo é a exceção na administração pública.',
+  r:'Lei 12.527/2011'},
+ {q:'O serviço quer usar inteligência artificial para apoiar registros e triagem. Qual cuidado de governança é essencial?',
+  o:['Supervisão humana, proteção dos dados dos pacientes e transparência sobre o uso','Usar sem avisar ninguém, porque agiliza o atendimento','Colar dados identificados de pacientes em qualquer ferramenta gratuita'],
+  e:'A IA pode apoiar, mas a decisão e a responsabilidade seguem com o profissional. É preciso proteger dados (LGPD), validar o desempenho da ferramenta e informar a equipe e os pacientes.',
+  r:'Lei 13.709/2018 (LGPD); boas práticas de governança'}
+]};
+
+/* Sorte ou revés. tipo: mov (casas), pts (pontos), skip (perde a próxima rodada) */
+const SORTE = [
+ {t:'Sorte',txt:'A unidade implantou a coleta seletiva e toda a equipe aderiu.',ef:{mov:2},lab:'Avance 2 casas'},
+ {t:'Sorte',txt:'Você participou de uma capacitação sobre o PGRSS.',ef:{pts:10},lab:'+10 pontos'},
+ {t:'Sorte',txt:'Sua equipe criou uma ação de educação em saúde construída com a comunidade.',ef:{mov:3},lab:'Avance 3 casas'},
+ {t:'Sorte',txt:'A auditoria interna elogiou a qualidade dos seus registros.',ef:{pts:10},lab:'+10 pontos'},
+ {t:'Sorte',txt:'Um canal de escuta anônimo resolveu um conflito antes de ele crescer.',ef:{mov:2},lab:'Avance 2 casas'},
+ {t:'Revés',txt:'O coletor de perfurocortantes passou da marca de 3/4 e ninguém trocou. O risco de acidente aumentou.',ef:{mov:-2},lab:'Volte 2 casas'},
+ {t:'Revés',txt:'Uma mensagem em grupo expôs dados de um paciente.',ef:{pts:-10},lab:'−10 pontos'},
+ {t:'Revés',txt:'Um vazamento de água ficou semanas sem manutenção.',ef:{mov:-2},lab:'Volte 2 casas'},
+ {t:'Revés',txt:'A falta de dimensionamento sobrecarregou a equipe e a escala precisou ser refeita.',ef:{skip:1},lab:'Perde a próxima rodada',soloAlt:{pts:-5},soloLab:'−5 pontos'},
+ {t:'Revés',txt:'Um incidente não foi notificado e voltou a acontecer.',ef:{pts:-10},lab:'−10 pontos'}
+];
+
+/* Vivências: situações reais para conversar (+10 pontos) */
+const VIVENCIAS = [
+ 'Lembre uma situação real do seu serviço ou estágio em que um resíduo foi descartado de forma inadequada. O que você mudaria?',
+ 'Cite uma ação de equidade que você já viu ou poderia propor na sua unidade.',
+ 'Descreva uma medida simples que reduziria o desperdício de materiais, água ou energia no seu setor, sem risco para o paciente.',
+ 'Que indicador ESG você proporia para acompanhar sua unidade ou seu hospital?',
+ 'Explique ESG em 30 segundos para um colega que nunca ouviu falar do tema.',
+ 'Conte uma situação em que a falta de transparência ou de comunicação prejudicou uma equipe. Que prática de governança ajudaria?'
+];
+
+const COMPROMISSOS = [
+ 'Vou separar corretamente os resíduos no meu local de trabalho e orientar a equipe.',
+ 'Vou propor uma ação de acolhimento e acessibilidade na minha unidade.',
+ 'Vou proteger os dados de quem cuido e compartilhá-los só pelos canais institucionais.',
+ 'Vou notificar incidentes e erros, sem culpabilizar, para que o serviço aprenda.',
+ 'Vou usar ferramentas de inteligência artificial só com supervisão humana e sem expor dados de pacientes.',
+ 'Vou propor ao meu serviço um indicador ESG simples e acompanhá-lo.'
+];
+
+/* Trilha: 25 casas. 0 = início, 24 = Relatório ESG */
+const TILES = ['start','E','S','G','L','E','S','G','V','E','L','S','G','E','L','S','V','G','E','L','S','G','V','L','end'];
+const LAST = TILES.length - 1;
+
+/* =========================================================
+   ESTADO E UTILIDADES
+   ========================================================= */
+const $ = (s, r=document) => r.querySelector(s);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const shuffle = a => { a = a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; };
+function h(tag, attrs, ...kids){
+  const el = document.createElement(tag);
+  for(const k in (attrs||{})){
+    const v = attrs[k];
+    if(k==='class') el.className = v;
+    else if(k==='text') el.textContent = v;
+    else if(k.startsWith('on')) el.addEventListener(k.slice(2), v);
+    else if(v!==false && v!=null) el.setAttribute(k, v);
+  }
+  kids.flat().forEach(c => { if(c==null) return; el.append(c.nodeType ? c : document.createTextNode(c)); });
+  return el;
+}
+
+let G = null;          // partida em andamento
+let setup = {modo:'solo', qtd:2};
+let screenNow = 'home';
+let rolling = false;
+
+function showScreen(id){
+  ['home','setup','game','results'].forEach(s => { $('#'+s).hidden = (s!==id); });
+  screenNow = id;
+  window.scrollTo(0,0);
+}
+
+function toast(msg){
+  const t = $('#toast'); t.textContent = msg; t.hidden = false;
+  clearTimeout(toast._t); toast._t = setTimeout(()=>{ t.hidden = true; }, 2600);
+}
+
+/* peões */
+function shapeEl(i, cls){
+  return h('span', {class:`${cls} shape-${i} p${i}`}, h('span',{class:'sh',text:String(i+1)}));
+}
+
+/* =========================================================
+   PREPARAR PARTIDA
+   ========================================================= */
+function renderNomes(){
+  const n = setup.modo==='solo' ? 1 : setup.qtd;
+  const box = $('#nomes'); box.innerHTML = '';
+  for(let i=0;i<n;i++){
+    const padrao = setup.modo==='solo' ? 'Você' : 'Equipe '+(i+1);
+    const prev = (renderNomes.vals||[])[i];
+    box.append(h('div',{class:'campo'},
+      h('label',{for:'nome'+i}, shapeEl(i,'mini'), setup.modo==='solo' ? 'Seu nome' : 'Nome da equipe '+(i+1)),
+      h('input',{id:'nome'+i,type:'text',maxlength:'18',value:prev||'',placeholder:padrao,autocomplete:'off'})
+    ));
+  }
+}
+function saveNomes(){ renderNomes.vals = [...document.querySelectorAll('#nomes input')].map(i=>i.value); }
+
+function setModo(m){
+  saveNomes(); setup.modo = m;
+  $('#modoSolo').setAttribute('aria-pressed', m==='solo');
+  $('#modoEquipes').setAttribute('aria-pressed', m==='equipes');
+  $('#boxQtd').hidden = (m==='solo');
+  renderNomes();
+}
+document.querySelectorAll('#boxQtd [data-q]').forEach(b => b.addEventListener('click', () => {
+  saveNomes(); setup.qtd = +b.dataset.q;
+  document.querySelectorAll('#boxQtd [data-q]').forEach(x => x.setAttribute('aria-pressed', x===b));
+  renderNomes();
+}));
+$('#modoSolo').addEventListener('click', () => setModo('solo'));
+$('#modoEquipes').addEventListener('click', () => setModo('equipes'));
+$('#btnJogar').addEventListener('click', () => { renderNomes(); showScreen('setup'); });
+$('#setupVoltar').addEventListener('click', () => showScreen('home'));
+$('#btnComecar').addEventListener('click', () => {
+  saveNomes();
+  const n = setup.modo==='solo' ? 1 : setup.qtd;
+  const nomes = [];
+  for(let i=0;i<n;i++){
+    const v = ((renderNomes.vals||[])[i]||'').trim();
+    nomes.push(v || (setup.modo==='solo' ? 'Você' : 'Equipe '+(i+1)));
+  }
+  newGame(nomes);
+});
+
+/* =========================================================
+   PARTIDA
+   ========================================================= */
+function newGame(nomes){
+  G = {
+    players: nomes.map((nome,i) => ({
+      i, nome, pos:0, pts:0, finished:false, rank:0, skip:false,
+      seals:{E:false,S:false,G:false}, bonusSeals:false,
+      stats:{E:{a:0,c:0},S:{a:0,c:0},G:{a:0,c:0}}
+    })),
+    cur:0, endFlag:null, finishCount:0,
+    decks:{E:[],S:[],G:[],L:[],V:[]},
+    phase:'roll'
+  };
+  buildBoard();
+  showScreen('game');
+  startTurn();
+}
+
+function draw(key, total){
+  if(!G.decks[key].length) G.decks[key] = shuffle([...Array(total).keys()]);
+  return G.decks[key].pop();
+}
+
+function buildBoard(){
+  const box = $('#boxBoard'); box.innerHTML = '';
+  const board = h('div',{id:'board',role:'img','aria-label':'Tabuleiro com 25 casas, do início ao relatório ESG'});
+  TILES.forEach((t,i) => {
+    const r = Math.floor(i/5), c = (r%2===0) ? i%5 : 4-(i%5), row = 4-r;
+    let inner;
+    if(t==='start') inner = h('span',{class:'t',text:'Início'});
+    else if(t==='end') inner = h('span',{class:'t',text:'Relatório ESG'});
+    else if(t==='L') inner = h('span',{text:'★'});
+    else if(t==='V') inner = h('span',{text:'✎'});
+    else inner = h('span',{text:t});
+    const tile = h('div',{class:'tile '+t,'data-i':i}, h('span',{class:'n',text:String(i)}), inner);
+    tile.style.gridColumn = c+1; tile.style.gridRow = row+1;
+    board.append(tile);
+  });
+  box.append(board);
+  const layer = h('div',{id:'pawns'});
+  box.append(layer);
+  G.players.forEach(p => {
+    const el = h('div',{class:`pawn shape-${p.i} p${p.i}`,id:'pawn'+p.i,'aria-hidden':'true'}, h('span',{class:'sh',text:String(p.i+1)}));
+    layer.append(el);
+  });
+  placeAll(false);
+}
+
+function placeAll(){
+  const board = $('#board'); if(!board) return;
+  const groups = {};
+  G.players.forEach(p => { (groups[p.pos] = groups[p.pos]||[]).push(p); });
+  G.players.forEach(p => {
+    const tile = board.children[p.pos];
+    const w = tile.offsetWidth, x = tile.offsetLeft, y = tile.offsetTop;
+    const ps = Math.round(w*0.44);
+    const grp = groups[p.pos], k = grp.indexOf(p);
+    let left, top;
+    if(grp.length===1){ left = x+(w-ps)/2; top = y+(w-ps)/2; }
+    else { const qx = k%2, qy = Math.floor(k/2); left = x + (qx? w-ps-4 : 4); top = y + (qy? w-ps-4 : 4); }
+    const el = $('#pawn'+p.i);
+    el.style.width = el.style.height = ps+'px';
+    el.style.left = left+'px'; el.style.top = top+'px';
+  });
+}
+window.addEventListener('resize', () => { if(G && screenNow==='game') placeAll(); });
+
+function renderPlacar(){
+  const box = $('#placar'); box.innerHTML = '';
+  G.players.forEach(p => {
+    box.append(h('div',{class:'chip'+(p.i===G.cur && !G.over?' ativo':'')},
+      h('div',{class:'nome'}, shapeEl(p.i,'mini'), h('span',{text:p.nome})),
+      h('div',{class:'pts'}, String(p.pts), h('small',{text:' pts'})),
+      h('div',{class:'selos','aria-label':'Selos conquistados'},
+        ['E','S','G'].map(k => h('span',{class:'selo '+k+(p.seals[k]?' on':''),title:PIL[k].nome,text:k})))
+    ));
+  });
+}
+
+function dieFace(n){
+  const map = {1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]};
+  const d = $('#die'); d.innerHTML = '';
+  for(let i=0;i<9;i++) d.append(h('i',{class: (map[n]||[]).includes(i)?'on':''}));
+}
+
+function startTurn(){
+  G.phase = 'roll';
+  const p = G.players[G.cur];
+  renderPlacar();
+  $('#vez').innerHTML = '';
+  $('#vez').append(shapeEl(p.i,'mini'), h('span',{text: G.players.length>1 ? 'Vez de '+p.nome : p.nome+', sua vez'}));
+  $('#btnRolar').disabled = false;
+  if(!$('#die').children.length) dieFace(1);
+  placeAll();
+}
+
+$('#btnRolar').addEventListener('click', async () => {
+  if(rolling || !G || G.phase!=='roll') return;
+  rolling = true; G.phase = 'move';
+  $('#btnRolar').disabled = true;
+  const die = $('#die'); die.classList.add('rolando');
+  const frames = reduce ? 1 : 9;
+  for(let i=0;i<frames;i++){ dieFace(1+Math.floor(Math.random()*6)); await sleep(70); }
+  const n = 1+Math.floor(Math.random()*6);
+  dieFace(n); die.classList.remove('rolando');
+  await sleep(250);
+  const p = G.players[G.cur];
+  await moveTo(p, Math.min(LAST, p.pos+n));
+  rolling = false;
+  await resolveTile(p);
+});
+
+async function moveTo(p, dest){
+  const step = dest>p.pos ? 1 : -1;
+  while(p.pos!==dest){
+    p.pos += step; placeAll();
+    await sleep(reduce?0:190);
+  }
+  placeAll();
+}
+
+function addPts(p, n){ p.pts = Math.max(0, p.pts + n); renderPlacar(); }
+
+/* ---------- folha inferior ---------- */
+let sheetRes = null;
+function openSheet(render){
+  return new Promise(res => {
+    sheetRes = res;
+    const body = $('#sheetBody'); body.innerHTML = '';
+    render(body, closeSheet);
+    $('#sheetWrap').hidden = false;
+    $('#sheet').scrollTop = 0;
+    const f = body.querySelector('h3'); if(f){ f.setAttribute('tabindex','-1'); f.focus({preventScroll:true}); }
+  });
+}
+function closeSheet(){
+  $('#sheetWrap').hidden = true;
+  const r = sheetRes; sheetRes = null; if(r) r();
+}
+
+async function resolveTile(p){
+  if(p.pos===LAST){ await chegou(p); return endTurn(); }
+  const t = TILES[p.pos];
+  if(t==='E'||t==='S'||t==='G') await cartaPergunta(p,t);
+  else if(t==='L') await cartaSorte(p);
+  else if(t==='V') await cartaVivencia(p);
+  endTurn();
+}
+
+async function cartaPergunta(p, k){
+  const bank = PERGUNTAS[k];
+  const q = bank[draw(k, bank.length)];
+  const opts = shuffle(q.o.map((txt,i)=>({txt, ok:i===0})));
+  await openSheet((body, close) => {
+    const ops = h('div',{class:'ops',role:'group','aria-label':'Alternativas'});
+    const fb = h('div',{class:'acoes2'});
+    const btns = opts.map((o,i) => {
+      const b = h('button',{type:'button',class:'opt'}, h('span',{class:'k',text:'ABCD'[i]}), h('span',{text:o.txt}));
+      b.addEventListener('click', () => {
+        btns.forEach((x,j) => {
+          x.disabled = true;
+          if(opts[j].ok){ x.classList.add('ok'); x.lastChild.append(h('span',{class:'tag',text:'Resposta correta'})); }
+          else if(x===b){ x.classList.add('no'); x.lastChild.append(h('span',{class:'tag',text:'Sua resposta'})); }
+        });
+        const st = p.stats[k]; st.a++;
+        let msg = '', extra = '';
+        if(o.ok){
+          st.c++; addPts(p,10); msg = 'Acertou! +10 pontos';
+          if(!p.seals[k]){
+            p.seals[k] = true; msg += ' e selo '+PIL[k].nome;
+            if(p.seals.E && p.seals.S && p.seals.G && !p.bonusSeals){ p.bonusSeals = true; addPts(p,15); extra = 'Relatório ESG completo: os três selos valem +15 pontos.'; }
+          }
+          renderPlacar();
+        } else { msg = 'Não foi desta vez. Sem pontos nesta carta.'; }
+        fb.append(
+          h('div',{class:'feedback',role:'status'},
+            h('div',{class:'tit',text:msg}),
+            h('p',{text:q.e}),
+            extra ? h('p',{text:extra,style:'margin-top:6px;font-weight:700'}) : null,
+            h('span',{class:'ref',text:'Fonte: '+q.r})),
+          h('button',{type:'button',class:'btn primary block',text:'Continuar',onclick:close})
+        );
+        fb.querySelector('.btn').focus();
+      });
+      return b;
+    });
+    ops.append(...btns);
+    body.append(
+      h('div',{class:'faixa '+k}, h('span',{class:'letra',text:k}), h('span',{text:'Pilar '+PIL[k].nome+' · '+p.nome})),
+      h('div',{class:'corpo'}, h('h3',{id:'sheetTitulo',class:'pergunta',text:q.q}), ops, fb)
+    );
+  });
+}
+
+async function cartaSorte(p){
+  const solo = G.players.length===1;
+  const c = SORTE[draw('L', SORTE.length)];
+  let ef = c.ef, lab = c.lab;
+  if(solo && c.ef.skip){ ef = c.soloAlt; lab = c.soloLab; }
+  await openSheet((body, close) => {
+    body.append(
+      h('div',{class:'faixa L'}, h('span',{class:'letra',text:'★'}), h('span',{text:'Sorte ou revés · '+p.nome})),
+      h('div',{class:'corpo'},
+        h('h3',{id:'sheetTitulo',text:c.t==='Sorte'?'Sorte!':'Revés'}),
+        h('p',{class:'pergunta',text:c.txt}),
+        h('div',null,h('span',{class:'efeito',text:lab})),
+        h('p',{class:'nota',text:'O efeito não ativa a carta da casa de destino.'}),
+        h('button',{type:'button',class:'btn primary block',text:'Aplicar',onclick:close})
+      ));
+  });
+  if(ef.pts) addPts(p, ef.pts);
+  if(ef.skip) p.skip = true;
+  if(ef.mov){
+    const dest = Math.max(0, Math.min(LAST, p.pos+ef.mov));
+    await moveTo(p, dest);
+    if(p.pos===LAST) await chegou(p);
+  }
+  renderPlacar();
+}
+
+async function cartaVivencia(p){
+  const txt = VIVENCIAS[draw('V', VIVENCIAS.length)];
+  await openSheet((body, close) => {
+    const tm = h('div',{class:'timer','aria-live':'off',text:'1:00'});
+    const ini = h('button',{type:'button',class:'btn block',text:'Iniciar cronômetro de 60 s'});
+    let iv = null;
+    ini.addEventListener('click', () => {
+      let s = 60; ini.disabled = true;
+      iv = setInterval(() => { s--; tm.textContent = Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); if(s<=0){ clearInterval(iv); tm.textContent = 'Tempo!'; ini.disabled = false; } }, 1000);
+    });
+    const fim = (ganha) => { clearInterval(iv); if(ganha) addPts(p,10); close(); };
+    body.append(
+      h('div',{class:'faixa V'}, h('span',{class:'letra',text:'✎'}), h('span',{text:'Vivência · '+p.nome})),
+      h('div',{class:'corpo'},
+        h('h3',{id:'sheetTitulo',text:'Conversem sobre a situação'}),
+        h('p',{class:'pergunta',text:txt}),
+        tm, ini,
+        h('p',{class:'nota',text:'Não há resposta certa. Conversar e registrar já vale pontos.'}),
+        h('div',{class:'acoes2'},
+          h('button',{type:'button',class:'btn primary block',text:'Conversamos (+10 pontos)',onclick:()=>fim(true)}),
+          h('button',{type:'button',class:'btn ghost block',text:'Passar esta carta',onclick:()=>fim(false)}))
+      ));
+  });
+}
+
+async function chegou(p){
+  if(p.finished) return;
+  p.finished = true; p.rank = ++G.finishCount;
+  if(G.endFlag===null) G.endFlag = p.i;
+  const bonus = G.players.length===1 ? 30 : ({1:30,2:20,3:10,4:5}[p.rank]);
+  addPts(p, bonus);
+  await openSheet((body, close) => {
+    body.append(
+      h('div',{class:'faixa M'}, h('span',{class:'letra',text:'★'}), h('span',{text:'Relatório ESG entregue'})),
+      h('div',{class:'corpo'},
+        h('h3',{id:'sheetTitulo',text: G.players.length>1 ? p.nome+' chegou em '+p.rank+'º lugar' : p.nome+', você chegou ao fim da trilha'}),
+        h('div',null,h('span',{class:'efeito',text:'+'+bonus+' pontos de bônus'})),
+        G.players.length>1 ? h('p',{class:'nota',text:'As demais equipes completam a rodada antes do resultado final.'}) : null,
+        h('button',{type:'button',class:'btn primary block',text:'Continuar',onclick:close})
+      ));
+  });
+}
+
+function endTurn(){ renderPlacar(); advance(); }
+
+function advance(){
+  const n = G.players.length;
+  let i = G.cur;
+  for(let k=0;k<2*n+2;k++){
+    if(i===n-1 && G.endFlag!==null) return finishGame();
+    i = (i+1)%n;
+    const p = G.players[i];
+    if(p.finished) continue;
+    if(p.skip){ p.skip = false; toast(p.nome+' perde esta rodada'); continue; }
+    G.cur = i; return startTurn();
+  }
+  finishGame();
+}
+
+$('#btnSair').addEventListener('click', async () => {
+  await openSheet((body, close) => {
+    body.append(
+      h('div',{class:'faixa M'}, h('span',{class:'letra',text:'!'}), h('span',{text:'Encerrar a partida'})),
+      h('div',{class:'corpo'},
+        h('h3',{id:'sheetTitulo',text:'Quer ver o resultado agora?'}),
+        h('p',{text:'A partida será encerrada e os pontos atuais serão mostrados.'}),
+        h('div',{class:'acoes2'},
+          h('button',{type:'button',class:'btn primary block',text:'Ver resultado',onclick:()=>{ G.forceEnd = true; close(); }}),
+          h('button',{type:'button',class:'btn ghost block',text:'Continuar jogando',onclick:close}))
+      ));
+  });
+  if(G && G.forceEnd){ finishGame(); }
+});
+
+/* =========================================================
+   RESULTADO
+   ========================================================= */
+let compSel = -1;
+function finishGame(){
+  G.over = true;
+  const ps = G.players.slice().sort((a,b) => b.pts-a.pts || (a.rank||99)-(b.rank||99));
+  const solo = ps.length===1;
+  $('#resTitulo').textContent = solo ? 'Seu resultado' : 'Resultado da trilha';
+  $('#resSub').textContent = solo ? 'Veja como você foi em cada pilar.' : 'Pontuação final e desempenho de cada equipe por pilar.';
+  const box = $('#rank'); box.innerHTML = '';
+  ps.forEach((p,idx) => {
+    const barras = ['E','S','G'].map(k => {
+      const s = p.stats[k], pct = s.a ? Math.round(100*s.c/s.a) : 0;
+      return h('div',{class:'barra'},
+        h('span',{class:'selo on '+k,text:k}),
+        h('div',{class:'tr'}, h('div',{class:'pr '+k,style:`width:${pct}%`})),
+        h('b',{text: s.a ? `${s.c}/${s.a}` : '—'}));
+    });
+    const tent = ['E','S','G'].filter(k => p.stats[k].a>0);
+    let dica = '';
+    if(tent.length){
+      const pior = tent.slice().sort((a,b) => (p.stats[a].c/p.stats[a].a) - (p.stats[b].c/p.stats[b].a))[0];
+      const taxa = p.stats[pior].c/p.stats[pior].a;
+      dica = taxa<1 ? 'Vale revisar: pilar '+PIL[pior].nome+'.' : 'Acertou todas as perguntas que apareceram. Muito bem!';
+    }
+    box.append(h('div',{class:'rk'+(idx===0?' top':'')},
+      h('div',{class:'lin'},
+        h('div',{class:'nm'}, solo?null:h('span',{text:(idx+1)+'º'}), shapeEl(p.i,'mini'), h('span',{text:p.nome})),
+        h('div',{class:'tot',text:p.pts+' pts'})),
+      barras,
+      dica ? h('p',{class:'nota',text:dica}) : null
+    ));
+  });
+  compSel = -1;
+  const cb = $('#compr'); cb.innerHTML = ''; $('#cert').hidden = true;
+  COMPROMISSOS.forEach((t,i) => {
+    const b = h('button',{type:'button','aria-pressed':'false',text:t});
+    b.addEventListener('click', () => {
+      compSel = i;
+      cb.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x===b));
+      $('#certTxt').textContent = t; $('#cert').hidden = false;
+    });
+    cb.append(b);
+  });
+  showScreen('results');
+}
+$('#btnCopiar').addEventListener('click', async () => {
+  const t = $('#certTxt').textContent;
+  try{ await navigator.clipboard.writeText(t); toast('Texto copiado'); }
+  catch(e){ toast('Não consegui copiar. Selecione o texto e copie.'); }
+});
+$('#btnDeNovo').addEventListener('click', () => { G = null; renderNomes(); showScreen('setup'); });
+$('#btnInicio').addEventListener('click', () => { G = null; showScreen('home'); });
+
+/* mantém a partida se a página for atualizada pelo visualizador */
+if(window.claude && window.claude.hot){
+  window.claude.hot.snapshot(() => ({G: (G && !G.over) ? G : null}));
+}
+function boot(d){
+  if(d && d.G){
+    G = d.G; G.phase = 'roll'; rolling = false;
+    buildBoard(); showScreen('game'); startTurn();
+  } else { showScreen('home'); }
+}
+(window.claude && window.claude.hot && window.claude.hot.ready) ? window.claude.hot.ready(boot) : boot((window.claude && window.claude.hot && window.claude.hot.data) || {});
+</script>
+</body>
+</html>
