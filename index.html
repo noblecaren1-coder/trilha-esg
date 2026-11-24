@@ -64,6 +64,10 @@ details[open] summary::after{content:'−'}
 .det li{margin:4px 0}
 .det small,.nota{color:var(--tinta-suave);font-size:16px}
 .rodape{margin-top:28px;color:var(--tinta-suave);font-size:16px}
+#rodapeGeral{background:var(--lavanda);margin-top:24px;padding:22px 0 28px;font-size:15px;line-height:1.5;color:var(--tinta)}
+#rodapeGeral .proto{display:inline-block;background:var(--ameixa);color:var(--creme);font-family:var(--display);font-weight:600;font-size:14px;border-radius:999px;padding:4px 12px;margin-bottom:10px}
+#rodapeGeral p+p{margin-top:2px}
+#rodapeGeral .aviso{margin-top:10px;color:var(--tinta-suave)}
 
 /* setup */
 .topo{display:flex;align-items:center;justify-content:space-between;padding:14px 0 6px}
@@ -299,7 +303,6 @@ details[open] summary::after{content:'−'}
         </ul>
       </div>
     </details>
-    <p class="rodape">Atividade da disciplina ENF-51 Estágio Docente, Programa de Pós-graduação em Enfermagem.</p>
   </div>
 </main>
 
@@ -382,6 +385,16 @@ details[open] summary::after{content:'−'}
     </div>
   </div>
 </main>
+
+<footer id="rodapeGeral">
+  <div class="wrap">
+    <span class="proto">Protótipo</span>
+    <p><b>Disciplina:</b> ENF-51 Estágio Docente</p>
+    <p><b>Programa:</b> Programa de Pós-graduação em Enfermagem (mestrado)</p>
+    <p><b>Universidade:</b> Universidade Federal de Alfenas (UNIFAL-MG)</p>
+    <p class="aviso">Este jogo é um protótipo criado para fins pedagógicos. O conteúdo e as regras podem sofrer alterações.</p>
+  </div>
+</footer>
 
 <div class="sheet-wrap" id="sheetWrap" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitulo" id="sheet"><div id="sheetBody"></div></div>
