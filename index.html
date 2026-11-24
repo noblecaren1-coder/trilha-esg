@@ -622,8 +622,36 @@ function shapeEl(i, cls){
 /* =========================================================
    GUIA (avatar ilustrativo)
    ========================================================= */
-const ACERTOS = ['Isso aí!','Boa! É assim que se decide em saúde.','Mandou bem!','Certo! Leiam a explicação em voz alta.'];
-const ERROS = ['Sem problema, errar faz parte de aprender.','Quase! A explicação ajuda na próxima.','Vamos aprender com essa: leiam a explicação.'];
+const ACERTOS = [
+ 'Acertou! Até o coletor de perfurocortantes ficou orgulhoso.',
+ 'Boa! Isso merece um selo e um cafezinho sustentável.',
+ 'Mandou bem! A governança aprova e o planeta agradece.',
+ 'Certo! Anota aí: ESG não é sorte, é decisão.'
+];
+const ERROS = [
+ 'Errou, mas sem greenwashing: assumiu e aprendeu. Leiam a explicação!',
+ 'Quase! Até o melhor plano de gerenciamento precisa de revisão.',
+ 'Ops! Erro notificado, sem culpados. Leiam a explicação.',
+ 'Tranquilo! Errar aqui não gera resíduo, só aprendizado.'
+];
+const INICIO = [
+ 'Bora! Jaleco passado, estetoscópio no pescoço e consciência ESG ligada.',
+ 'Trilha aberta! Prometo não fazer greenwashing com a pontuação.',
+ 'Começou! Quem separa o lixo certo já sai na frente.'
+];
+const PEDIDO_DICA = [
+ 'Deixa comigo! Risquei umas alternativas. Cobro em pontos, não em cafezinho.',
+ 'Pedido de socorro recebido! Consultei meu PGRSS interno e descartei as erradas.',
+ 'Tri na área! Risquei as piores. Agora é com você.',
+ 'Dica entregue! Em governança, isso se chama transparência na tomada de decisão.'
+];
+const CHEGADA = [
+ 'Relatório ESG entregue, sem plágio e sem greenwashing!',
+ 'Linha de chegada! O planeta, as pessoas e a governança agradecem.',
+ 'Chegou! Pode pedir o café: a Tri paga em pontos.'
+];
+const SORTE_L = ['Sorte! Hoje a coleta seletiva passou na hora certa.','Ventos a favor! Aproveite o impulso.'];
+const REVES_L = ['Revés! Respire, beba uma água e siga em frente.','Eita! Isso é o tal aprendizado organizacional.'];
 const DICAS = [
  'Separar o resíduo na origem reduz custo e risco.',
  'Nenhuma economia vale mais que a segurança do paciente.',
@@ -831,7 +859,7 @@ function startTurn(){
   if(!$('#die').children.length) dieFace(1);
   placeAll();
   const vezTxt = G.players.length>1 ? 'Vez de '+p.nome+'. Role o dado!' : 'Role o dado!';
-  if(!guiaGame){ $('#guiaGame').innerHTML=''; guiaGame = makeGuia(vezTxt,'oi'); $('#guiaGame').append(guiaGame.el); }
+  if(!guiaGame){ $('#guiaGame').innerHTML=''; guiaGame = makeGuia(pick(INICIO)+' '+vezTxt,'feliz'); $('#guiaGame').append(guiaGame.el); }
   else if(pendente){ guiaGame.say(pendente.t+' '+vezTxt, pendente.m); }
   else guiaGame.say(vezTxt,'oi');
   pendente = null;
@@ -944,7 +972,12 @@ async function cartaPergunta(p, k){
           btns[i].disabled = true; btns[i].classList.add('riscada');
           btns[i].lastChild.append(h('span',{class:'tag',text:'Descartada pela Tri'}));
         });
-        dicaBtn.replaceWith(h('p',{class:'nota',role:'status',text:'Dica usada: a Tri tirou alternativas. Esta carta vale 5 pontos. Cada jogador tem uma dica por partida.'}));
+        const fala = pick(PEDIDO_DICA);
+        dicaBtn.replaceWith(h('div',{class:'feedback',role:'status'},
+          h('div',{class:'fbtop'}, miniAvatar('feliz'), h('div',{class:'tit',text:'Tri'})),
+          h('p',{text:fala}),
+          h('span',{class:'ref',text:'Esta carta agora vale 5 pontos. Cada jogador tem uma dica por partida.'})));
+        if(guiaGame) guiaGame.say(fala,'feliz');
         dicaBtn = null;
       });
     }
@@ -971,7 +1004,7 @@ async function cartaSorte(p){
         h('button',{type:'button',class:'btn primary block',text:'Aplicar',onclick:close})
       ));
   });
-  reagir(c.t==='Sorte' ? 'Sorte! Aproveite o impulso.' : 'Revés acontece. Respire e siga em frente.', c.t==='Sorte' ? 'feliz' : 'incentivo');
+  reagir(c.t==='Sorte' ? pick(SORTE_L) : pick(REVES_L), c.t==='Sorte' ? 'feliz' : 'incentivo');
   if(ef.pts) addPts(p, ef.pts);
   if(ef.skip) p.skip = true;
   if(ef.mov){
@@ -1011,7 +1044,7 @@ async function chegou(p){
   if(p.finished) return;
   p.finished = true; p.rank = ++G.finishCount;
   if(G.endFlag===null) G.endFlag = p.i;
-  reagir('Relatório entregue! Parabéns!','feliz');
+  reagir(pick(CHEGADA),'feliz');
   const bonus = G.players.length===1 ? 30 : ({1:30,2:20,3:10,4:5}[p.rank]);
   addPts(p, bonus);
   await openSheet((body, close) => {
@@ -1067,7 +1100,19 @@ function finishGame(){
   const solo = ps.length===1;
   $('#resTitulo').textContent = solo ? 'Seu resultado' : 'Resultado da trilha';
   $('#guiaRes').innerHTML = '';
-  $('#guiaRes').append(makeGuia(solo ? 'Trilha concluída! Veja como você foi em cada pilar.' : 'Fim de jogo! Parabéns a todas as equipes.','feliz',true).el);
+  let fala, humor = 'feliz';
+  if(solo){
+    const p0 = ps[0]; const at = ['E','S','G'].reduce((x,k)=>x+p0.stats[k].a,0), ce = ['E','S','G'].reduce((x,k)=>x+p0.stats[k].c,0);
+    const taxa = at ? ce/at : 0;
+    if(taxa>=0.8) fala = 'Uau! Desempenho de relatório de sustentabilidade premiado. Eu já ia te chamar para o comitê!';
+    else if(taxa>=0.5){ fala = 'Muito bem! Falta pouco para virar referência em ESG. Dê uma olhada no pilar mais fraco.'; }
+    else { fala = 'Esta rodada foi de aprendizado. Perder com transparência também é governança. Tente de novo, eu torço por você!'; humor = 'incentivo'; }
+  } else if(ps.length>1 && ps[0].pts===ps[1].pts){
+    fala = 'Empate! Governança pede transparência: dividam o troféu e marquem a revanche.';
+  } else {
+    fala = ps[0].nome+' venceu! Selos reluzentes e governança impecável. Quem ficou atrás: ESG também é saber perder com um sorriso. Revanche?';
+  }
+  $('#guiaRes').append(makeGuia(fala,humor,true).el);
   $('#resSub').textContent = solo ? 'Veja como você foi em cada pilar.' : 'Pontuação final e desempenho de cada equipe por pilar.';
   const box = $('#rank'); box.innerHTML = '';
   ps.forEach((p,idx) => {
