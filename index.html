@@ -158,6 +158,26 @@ details[open] summary::after{content:'−'}
 .timer{font-family:var(--display);font-weight:600;font-size:32px;color:var(--ameixa);text-align:center;font-variant-numeric:tabular-nums}
 .acoes2{display:grid;gap:10px}
 
+/* guia (avatar) */
+.guia{display:grid;grid-template-columns:76px 1fr;gap:12px;align-items:center}
+.guia.grande{grid-template-columns:104px 1fr}
+.av{width:76px;height:76px;border-radius:50%;border:0;padding:0;background:var(--lavanda);overflow:hidden;cursor:pointer;flex:0 0 auto}
+.guia.grande .av{width:104px;height:104px}
+.av svg,.miniav svg{width:100%;height:100%;display:block}
+.av.pula{animation:pulo .6s ease}
+@keyframes pulo{0%{transform:scale(1)}30%{transform:scale(1.12) translateY(-4px)}60%{transform:scale(.97)}100%{transform:scale(1)}}
+.balao{position:relative;background:var(--lavanda);border-radius:18px;padding:10px 14px;font-size:17px;line-height:1.35;min-height:52px;display:flex;align-items:center}
+.balao::before{content:'';position:absolute;left:-8px;top:50%;margin-top:-8px;border:8px solid transparent;border-right-color:var(--lavanda);border-left:0}
+.legenda-av{font-size:14px;color:var(--tinta-suave);margin-top:6px}
+.braco{transform-origin:150px 170px;animation:acena 1.1s ease-in-out infinite}
+@keyframes acena{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(10deg)}}
+.miniav{display:inline-block;width:36px;height:36px;border-radius:50%;overflow:hidden;background:var(--lavanda);flex:0 0 36px}
+.btn.dica{gap:10px;font-size:16px;min-height:52px}
+.opt.riscada{opacity:.4;text-decoration:line-through}
+.fbtop{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.fbtop .miniav{width:44px;height:44px;flex-basis:44px}
+.fbtop .tit{margin:0}
+
 /* resultados */
 .rank{display:grid;gap:12px;margin-top:6px}
 .rk{background:#fff;border:2px solid var(--linha);border-radius:20px;padding:14px 16px;display:grid;gap:10px}
@@ -189,6 +209,7 @@ details[open] summary::after{content:'−'}
   .faixa{border-radius:28px 28px 0 0}
 }
 @media (prefers-reduced-motion:reduce){
+  .av.pula,.braco{animation:none}
   .pawn{transition:none}.die.rolando{animation:none}.sheet{animation:none}
 }
 </style>
@@ -203,6 +224,7 @@ details[open] summary::after{content:'−'}
       <div class="marca" aria-hidden="true"><span class="e">E</span><span class="s">S</span><span class="g">G</span></div>
       <h1>Trilha ESG</h1>
       <p class="lead">ESG nos serviços de saúde: um jogo de percurso para decidir bem pelo ambiente, pelas pessoas e pela instituição.</p>
+      <div id="guiaHome" style="margin:0 0 24px"></div>
       <div class="acoes">
         <button class="btn primary block" id="btnJogar" type="button">Jogar agora</button>
       </div>
@@ -219,7 +241,7 @@ details[open] summary::after{content:'−'}
       <div class="det">
         <ol>
           <li>Escolha jogar sozinho(a) ou em até 4 equipes. Cada equipe tem um peão com forma e número próprios.</li>
-          <li>Na sua vez, toque em <b>Rolar o dado</b> e avance as casas.</li>
+          <li>Na sua vez, toque em <b>Rolar o dado</b> e avance as casas. Toque no guia para ver uma dica.</li>
           <li>A casa em que o peão para define a carta: pergunta de <b>E</b>, <b>S</b> ou <b>G</b>, carta de <b>Sorte ou revés</b> ou uma <b>Vivência</b> para conversar.</li>
           <li>Resposta certa vale 10 pontos. Cada pilar acertado pela primeira vez rende um selo. Os três selos juntos valem mais 15 pontos.</li>
           <li>Quem chega primeiro à casa final ganha bônus. As outras equipes completam a rodada, e vence quem somar mais pontos.</li>
@@ -246,6 +268,7 @@ details[open] summary::after{content:'−'}
           <li><b>Peões:</b> quatro formas numeradas.</li>
           <li><b>Dado:</b> dado digital de 6 faces.</li>
           <li><b>Marcadores de pontos:</b> placar e selos E, S e G.</li>
+          <li><b>Guia (avatar):</b> comenta as jogadas, dá dicas ao toque e descarta alternativas (uma vez por jogador, e a carta vale 5 pontos).</li>
         </ul>
         <h3>Sugestão de debate final</h3>
         <ol>
@@ -255,7 +278,7 @@ details[open] summary::after{content:'−'}
         </ol>
         <p class="nota">As cartas ficam no início do código da página, em listas simples, e podem ser editadas. Uma partida leva em torno de 10 a 25 minutos, conforme o número de equipes (estimativa).</p>
         <h3>Uso de inteligência artificial</h3>
-        <p>Jogo elaborado com apoio de IA (Claude, Anthropic). As cartas devem ser conferidas e validadas pelas autoras antes do uso em aula.</p>
+        <p>Jogo e avatar ilustrativo elaborados com apoio de IA (Claude, Anthropic). As cartas devem ser conferidas e validadas pelas autoras antes do uso em aula.</p>
       </div>
     </details>
 
@@ -317,6 +340,7 @@ details[open] summary::after{content:'−'}
       </div>
       <div class="lado">
         <div class="placar" id="placar" aria-label="Placar"></div>
+        <div id="guiaGame"></div>
         <div class="comandos">
           <div class="die" id="die" aria-hidden="true"></div>
           <div>
@@ -340,6 +364,7 @@ details[open] summary::after{content:'−'}
 <main id="results" class="screen" hidden>
   <div class="wrap">
     <div class="topo"><h2 id="resTitulo">Fim da trilha</h2></div>
+    <div id="guiaRes" style="margin:4px 0 14px"></div>
     <p id="resSub" class="nota" style="margin-bottom:4px"></p>
     <div class="rank" id="rank"></div>
     <div class="painel">
@@ -376,130 +401,130 @@ const PIL = {
 
 const PERGUNTAS = {
 E:[
- {q:'Ao terminar uma punção, onde descartar a agulha usada?',
-  o:['No coletor rígido para perfurocortantes, sem reencapar','No saco branco leitoso, junto com a gaze','Na lixeira comum, depois de recolocar a tampa da agulha'],
-  e:'Perfurocortantes (Grupo E) vão em coletor rígido, resistente a perfuração e vazamento, preenchido até 3/4 da capacidade. Reencapar agulhas aumenta o risco de acidente.',
+ {q:'Onde descartar uma agulha usada?',
+  o:['Coletor rígido para perfurocortantes','Saco branco leitoso','Lixeira comum','Saco azul de recicláveis'],
+  e:'Perfurocortantes (Grupo E) vão em coletor rígido, preenchido até 3/4 da capacidade. Não reencape agulhas.',
   r:'Anvisa, RDC 222/2018; NR-32'},
- {q:'Qual é o saco usado para resíduos infectantes do Grupo A?',
-  o:['Branco leitoso, com símbolo de substância infectante','Preto, igual ao do lixo comum','Azul, igual ao dos recicláveis'],
-  e:'O Grupo A é acondicionado em saco branco leitoso identificado. Misturar resíduos comuns nele aumenta o volume que precisa de tratamento.',
+ {q:'Qual é o saco dos resíduos infectantes (Grupo A)?',
+  o:['Branco leitoso','Preto','Azul','Verde'],
+  e:'O Grupo A usa saco branco leitoso, com símbolo de substância infectante.',
   r:'Anvisa, RDC 222/2018'},
- {q:'Uma embalagem plástica limpa de insumo, sem contato com fluidos de pacientes, deve ir para:',
-  o:['A coleta seletiva de recicláveis (Grupo D)','O saco branco leitoso infectante','O coletor de perfurocortantes'],
-  e:'Resíduos comuns recicláveis seguem a coleta seletiva. Segregar certo na origem reduz custo e impacto ambiental.',
+ {q:'Embalagem plástica limpa, sem contato com pacientes, vai para:',
+  o:['Reciclável (coleta seletiva)','Infectante (saco branco)','Perfurocortante','Resíduo químico'],
+  e:'Resíduo comum reciclável segue a coleta seletiva. Separar certo reduz custo e impacto.',
   r:'Anvisa, RDC 222/2018'},
  {q:'O que é o PGRSS?',
-  o:['O plano que descreve como o serviço gerencia seus resíduos, da geração à destinação final','Um programa de benefícios para servidores','Um protocolo de higiene das mãos'],
-  e:'Plano de Gerenciamento de Resíduos de Serviços de Saúde: documento exigido dos serviços geradores de resíduos.',
+  o:['Plano de gerenciamento dos resíduos do serviço','Protocolo de higiene das mãos','Programa de vacinação','Plano de segurança do paciente'],
+  e:'É o Plano de Gerenciamento de Resíduos de Serviços de Saúde, exigido dos serviços geradores.',
   r:'Anvisa, RDC 222/2018'},
- {q:'Qual é a ordem de prioridade da Política Nacional de Resíduos Sólidos?',
-  o:['Não gerar, reduzir, reutilizar, reciclar e só então tratar e dispor os rejeitos','Reciclar, depois reduzir e, por último, não gerar','Coletar, aterrar e esquecer'],
-  e:'A prioridade é evitar gerar resíduos. A disposição final fica apenas para os rejeitos.',
+ {q:'Qual é a primeira prioridade da política de resíduos?',
+  o:['Não gerar resíduos','Reciclar','Incinerar','Aterrar'],
+  e:'A ordem é não gerar, reduzir, reutilizar e reciclar. Só os rejeitos vão para disposição final.',
   r:'Lei 12.305/2010'},
- {q:'A unidade quer economizar água. Qual medida mantém a segurança do paciente?',
-  o:['Consertar vazamentos e torneiras defeituosas, mantendo a higiene das mãos','Reduzir a frequência de higiene das mãos','Reutilizar materiais de uso único'],
-  e:'Sustentabilidade nunca reduz segurança. Economize onde há desperdício (vazamentos), jamais na higiene das mãos ou reutilizando produto de uso único.',
+ {q:'Qual medida economiza água sem risco ao paciente?',
+  o:['Consertar vazamentos','Lavar menos as mãos','Reutilizar material descartável','Reduzir a limpeza das superfícies'],
+  e:'Economize onde há desperdício, como vazamentos. Nunca na higiene das mãos nem reutilizando material de uso único.',
   r:'Boas práticas de segurança do paciente'},
- {q:'Como as mudanças climáticas afetam o trabalho da enfermagem?',
-  o:['Calor extremo, enchentes e doenças sensíveis ao clima aumentam a demanda por cuidado','Não têm relação com a saúde','Afetam só áreas sem serviços de saúde'],
-  e:'Eventos climáticos extremos pressionam os serviços e agravam desigualdades. Preparar equipes e unidades faz parte do cuidado.',
-  r:'Organização Mundial da Saúde'},
- {q:'Um hospital se diz "100% sustentável", mas não mostra dados nem metas. Isso lembra:',
-  o:['Greenwashing, ou propaganda ambiental sem comprovação','Governança exemplar','Uma auditoria independente'],
-  e:'Greenwashing é divulgar atitudes ambientais que não são comprovadas. Metas, indicadores e relatórios abertos são o antídoto.',
-  r:'Conceito de ESG'},
- {q:'Medicamentos vencidos do estoque da unidade devem:',
-  o:['Seguir o fluxo definido no PGRSS, sem ir para pia, vaso ou lixo comum','Ser descartados na pia para não acumular','Ir para o lixo comum, bem embrulhados'],
-  e:'Fármacos na água e no solo contaminam o ambiente. O PGRSS define o destino de cada tipo de medicamento.',
+ {q:'Para onde vai o medicamento vencido do estoque?',
+  o:['Fluxo definido no PGRSS','Pia','Lixo comum','Vaso sanitário'],
+  e:'Medicamentos contaminam água e solo. O PGRSS define o destino de cada tipo.',
   r:'Anvisa, RDC 222/2018'},
- {q:'Qual Objetivo de Desenvolvimento Sustentável trata da ação contra a mudança global do clima?',
-  o:['ODS 13','ODS 3','ODS 16'],
-  e:'ODS 13: ação contra a mudança global do clima. O ODS 3 é saúde e bem-estar e o ODS 16 é paz, justiça e instituições eficazes.',
+ {q:'Um hospital se diz "sustentável", sem mostrar dados nem metas. Isso é:',
+  o:['Greenwashing','Auditoria ambiental','Logística reversa','Licenciamento'],
+  e:'Greenwashing é propaganda ambiental sem comprovação. Dados, metas e relatórios abertos evitam isso.',
+  r:'Conceito de ESG'},
+ {q:'As mudanças climáticas podem:',
+  o:['Aumentar a demanda nos serviços de saúde','Reduzir as doenças transmitidas por vetores','Afetar só áreas rurais','Não ter relação com a saúde'],
+  e:'Calor extremo, enchentes e doenças ligadas ao clima pressionam os serviços.',
+  r:'Organização Mundial da Saúde'},
+ {q:'Qual ODS trata da ação contra a mudança do clima?',
+  o:['ODS 13','ODS 3','ODS 6','ODS 12'],
+  e:'ODS 13: ação contra a mudança global do clima. O ODS 12 é consumo responsável e o ODS 6, água e saneamento.',
   r:'ONU, Agenda 2030'}
 ],
 S:[
- {q:'Qual Objetivo de Desenvolvimento Sustentável trata de saúde e bem-estar?',
-  o:['ODS 3','ODS 13','ODS 4'],
-  e:'ODS 3: assegurar vidas saudáveis e promover o bem-estar para todas as pessoas, em todas as idades.',
+ {q:'Qual ODS trata de saúde e bem-estar?',
+  o:['ODS 3','ODS 4','ODS 10','ODS 13'],
+  e:'ODS 3: assegurar vidas saudáveis e promover o bem-estar para todas as idades.',
   r:'ONU, Agenda 2030'},
- {q:'Qual princípio do SUS orienta oferecer mais a quem mais precisa, para reduzir desigualdades?',
-  o:['Equidade','Descentralização','Hierarquização'],
-  e:'Equidade reconhece que pessoas em situações diferentes precisam de apoios diferentes para alcançar o mesmo direito à saúde.',
+ {q:'Qual princípio do SUS dá mais a quem mais precisa?',
+  o:['Equidade','Universalidade','Integralidade','Descentralização'],
+  e:'Equidade é tratar de forma diferente quem tem necessidades diferentes, para reduzir desigualdades.',
   r:'Lei 8.080/1990'},
- {q:'Qual norma regulamentadora trata da segurança e saúde no trabalho em serviços de saúde?',
-  o:['NR-32','NR-10','NR-35'],
-  e:'A NR-32 cobre riscos biológicos, químicos, de radiação e de perfurocortantes, entre outros, para quem trabalha em saúde.',
+ {q:'Qual norma trata da saúde de quem trabalha em serviços de saúde?',
+  o:['NR-32','NR-5','NR-10','NR-35'],
+  e:'A NR-32 cobre riscos biológicos, químicos e de perfurocortantes para os trabalhadores da saúde.',
   r:'NR-32'},
- {q:'Qual lei assegura direitos e acessibilidade à pessoa com deficiência?',
-  o:['Lei Brasileira de Inclusão (Lei 13.146/2015)','Lei de Acesso à Informação','Lei Geral de Proteção de Dados'],
-  e:'A Lei Brasileira de Inclusão, ou Estatuto da Pessoa com Deficiência, trata de acessibilidade, atendimento prioritário e não discriminação.',
+ {q:'Qual lei garante acessibilidade à pessoa com deficiência?',
+  o:['Lei Brasileira de Inclusão','Lei de Acesso à Informação','LGPD','Lei Orgânica da Saúde'],
+  e:'A Lei Brasileira de Inclusão (13.146/2015) trata de acessibilidade, atendimento prioritário e não discriminação.',
   r:'Lei 13.146/2015'},
- {q:'Uma pessoa trans pede para ser chamada pelo nome social. A conduta alinhada ao pilar Social é:',
-  o:['Chamar pelo nome social e registrar conforme as normas do serviço','Usar só o nome do registro civil','Pedir comprovante antes de respeitar o pedido'],
-  e:'A Portaria 1.820/2009 assegura o uso do nome de preferência e prevê campo para o nome social nos documentos do usuário.',
+ {q:'O paciente pede para ser chamado pelo nome social. O que fazer?',
+  o:['Chamar pelo nome social','Usar só o nome do documento','Pedir comprovante antes','Chamar pelo número da ficha'],
+  e:'A Portaria 1.820/2009 garante o uso do nome social no atendimento em saúde.',
   r:'Portaria MS 1.820/2009'},
- {q:'Qual conjunto de indicadores pertence ao pilar Social de uma instituição?',
-  o:['Condições de trabalho, saúde dos trabalhadores, diversidade e relação com a comunidade','Consumo de água e de energia','Código de conduta e canal de denúncias'],
-  e:'Consumo de recursos é Ambiental. Código de conduta e canal de denúncias são Governança.',
-  r:'Conceito de ESG'},
- {q:'Para garantir que o paciente entendeu a orientação de alta, o melhor é:',
-  o:['Usar linguagem simples e pedir que ele explique com as próprias palavras','Falar rápido, com termos técnicos, para ganhar tempo','Entregar um folheto e dispensar a conversa'],
-  e:'Pedir que a pessoa repita com as próprias palavras (teach-back) confirma a compreensão e promove equidade em saúde.',
+ {q:'Como confirmar que o paciente entendeu a orientação?',
+  o:['Pedir que explique com as próprias palavras','Perguntar só "entendeu?"','Entregar apenas um folheto','Repetir mais rápido'],
+  e:'Pedir que a pessoa explique com as próprias palavras (teach-back) mostra se a orientação foi compreendida.',
   r:'Letramento em saúde'},
- {q:'Na Política Nacional de Humanização, acolhimento significa:',
-  o:['Escutar, reconhecer a necessidade e responsabilizar-se pelo cuidado','Apenas receber na porta e entregar uma senha','Atender somente quem tem agendamento'],
-  e:'Acolhimento é uma postura de escuta qualificada e de responsabilização ao longo de todo o cuidado, não só uma etapa da recepção.',
+ {q:'Acolhimento é:',
+  o:['Escutar e se responsabilizar pelo cuidado','Entregar a senha na recepção','Atender só com agendamento','Atender quem chegou primeiro'],
+  e:'Na Política Nacional de Humanização, acolher é escutar, reconhecer a necessidade e se responsabilizar pelo cuidado.',
   r:'Política Nacional de Humanização'},
- {q:'Uma unidade básica amplia o horário de atendimento e faz busca ativa de quem mais falta às consultas. Isso fortalece qual pilar?',
-  o:['Social, pelo acesso e pela equidade','Ambiental, pela redução de resíduos','Apenas a Governança'],
+ {q:'Uma unidade amplia o horário e busca quem falta às consultas. Qual pilar?',
+  o:['Social','Ambiental','Governança'],
   e:'Ampliar o acesso e buscar quem mais precisa são ações sociais que reduzem barreiras ao cuidado.',
   r:'Conceito de ESG; princípios do SUS'},
  {q:'Qual medida cuida de quem cuida?',
-  o:['Dimensionar a equipe de forma adequada e garantir pausas de descanso','Aumentar horas extras para cobrir faltas','Evitar conversas sobre sofrimento no trabalho'],
-  e:'Dimensionamento adequado e boas condições de trabalho reduzem sobrecarga e adoecimento, e protegem também a segurança do paciente.',
-  r:'Parâmetros de dimensionamento da enfermagem (Cofen)'}
+  o:['Dimensionar a equipe e garantir pausas','Aumentar as horas extras','Reduzir os intervalos','Cobrar metas mais altas'],
+  e:'Equipe bem dimensionada e com pausas adoece menos e cuida com mais segurança.',
+  r:'Parâmetros de dimensionamento (Cofen)'},
+ {q:'Qual destes é um indicador do pilar Social?',
+  o:['Absenteísmo da equipe','Consumo de energia','Volume de resíduos','Existência de canal de denúncia'],
+  e:'Absenteísmo e adoecimento mostram as condições de trabalho (Social). Energia e resíduos são Ambiental; canal de denúncia é Governança.',
+  r:'Conceito de ESG'}
 ],
 G:[
  {q:'O termo ESG foi popularizado, em 2004, por qual iniciativa?',
-  o:['O relatório Who Cares Wins, do Pacto Global da ONU','A Constituição Federal de 1988','O Código de Ética da Enfermagem'],
-  e:'Who Cares Wins propôs integrar fatores ambientais, sociais e de governança às decisões de investimento e de gestão.',
+  o:['Pacto Global da ONU','Constituição de 1988','Conferência Rio-92','Código de Ética da Enfermagem'],
+  e:'O relatório Who Cares Wins, do Pacto Global da ONU, popularizou o termo em 2004.',
   r:'ONU, Pacto Global (2004)'},
- {q:'Qual documento orienta a conduta ética dos profissionais de enfermagem no Brasil?',
-  o:['Código de Ética dos Profissionais de Enfermagem (Resolução Cofen 564/2017)','Estatuto da Cidade','Regimento do Conselho Nacional de Justiça'],
-  e:'O Código de Ética define princípios, direitos, deveres e proibições. É base de governança profissional.',
+ {q:'Qual norma traz o Código de Ética da Enfermagem?',
+  o:['Resolução Cofen 564/2017','Lei 8.080/1990','RDC 222/2018','NR-32'],
+  e:'A Resolução Cofen 564/2017 define princípios, direitos, deveres e proibições da profissão.',
   r:'Resolução Cofen 564/2017'},
- {q:'Você fotografou o prontuário para tirar uma dúvida e quer enviar a um grupo de mensagens. O que fazer?',
-  o:['Não enviar. Dados de saúde são sensíveis; use os canais institucionais autorizados','Enviar, se cobrir o nome do paciente','Enviar, porque é só um grupo de colegas'],
-  e:'Dados de saúde são dados pessoais sensíveis. Compartilhar só o necessário, pelos meios autorizados, protege o paciente e a instituição.',
+ {q:'Posso enviar foto do prontuário ao grupo de mensagens da equipe?',
+  o:['Não, são dados sensíveis','Sim, se cobrir o nome','Sim, é só a equipe','Sim, se for urgente'],
+  e:'Dados de saúde são sensíveis (LGPD). Compartilhe só pelos canais oficiais do serviço.',
   r:'Lei 13.709/2018 (LGPD)'},
- {q:'Qual mecanismo de governança permite relatar irregularidades com segurança?',
-  o:['Canal de denúncias ou ouvidoria','Mural de avisos','Escala de plantão'],
-  e:'Canais de denúncia e ouvidoria, com proteção a quem relata, ajudam a corrigir problemas cedo.',
+ {q:'Qual mecanismo permite relatar irregularidades com segurança?',
+  o:['Ouvidoria ou canal de denúncias','Mural de avisos','Escala de plantão','Passagem de plantão'],
+  e:'Ouvidoria e canais de denúncia, com proteção a quem relata, ajudam a corrigir problemas cedo.',
   r:'Boas práticas de governança'},
- {q:'Você percebe um erro de medicação que chegou ao paciente. A conduta alinhada à boa governança é:',
-  o:['Cuidar do paciente, notificar o incidente e analisar as causas sem buscar culpados','Corrigir em silêncio para evitar problemas','Culpar o colega do turno anterior'],
-  e:'Notificar e aprender com os incidentes é prática de cultura de segurança. O foco é o sistema, não a punição.',
+ {q:'Ocorreu um erro de medicação. O que fazer?',
+  o:['Cuidar do paciente e notificar','Corrigir sem avisar','Esperar para ver se há dano','Culpar o turno anterior'],
+  e:'Notificar o incidente permite aprender e evitar novos erros, sem busca de culpados.',
   r:'Programa Nacional de Segurança do Paciente'},
- {q:'Antes de iniciar uma pesquisa com pacientes no serviço, é preciso:',
-  o:['Aprovação em comitê de ética e consentimento livre e esclarecido dos participantes','Apenas a autorização verbal do chefe do setor','Nada, se os dados forem anônimos depois'],
-  e:'A Resolução 466/2012 exige consentimento livre e esclarecido e a análise ética do projeto por um comitê de ética em pesquisa.',
+ {q:'O que é exigido antes de uma pesquisa com pacientes?',
+  o:['Aprovação do comitê de ética e TCLE','Autorização verbal da chefia','Apenas o TCLE','Nada, se os dados forem anônimos'],
+  e:'A Resolução 466/2012 exige análise de um comitê de ética e o consentimento livre e esclarecido.',
   r:'Resolução CNS 466/2012'},
- {q:'Um profissional que participa da compra de insumos recebe brindes de um fornecedor concorrente. O que a boa governança pede?',
-  o:['Declarar o conflito de interesses e se afastar da decisão','Aceitar, se o brinde for pequeno','Ocultar para evitar fofoca'],
-  e:'Conflito de interesses deve ser declarado e gerenciado. Transparência protege as decisões e as pessoas.',
+ {q:'Quem compra insumos recebe brinde de um fornecedor. O que fazer?',
+  o:['Declarar o conflito e se afastar','Aceitar se for pequeno','Aceitar e dividir com a equipe','Ocultar para evitar problemas'],
+  e:'Conflito de interesses deve ser declarado e gerenciado. Transparência protege as decisões.',
   r:'Boas práticas de integridade'},
- {q:'Qual ferramenta comunica o desempenho ESG de uma instituição com indicadores e metas?',
-  o:['Relatório de sustentabilidade, por exemplo no padrão GRI','Folder de propaganda','Cartaz de campanha'],
-  e:'Relatórios com indicadores comparáveis, metas e prestação de contas dão credibilidade e evitam o greenwashing.',
+ {q:'Que documento mostra indicadores e metas ESG da instituição?',
+  o:['Relatório de sustentabilidade','Escala mensal','Ata de reunião','Plano de cargos'],
+  e:'Relatórios com indicadores e metas (por exemplo, no padrão GRI) dão credibilidade e evitam o greenwashing.',
   r:'Global Reporting Initiative'},
- {q:'Qual lei garante o direito de acesso a informações públicas?',
-  o:['Lei de Acesso à Informação (Lei 12.527/2011)','Lei Brasileira de Inclusão','Política Nacional de Resíduos Sólidos'],
-  e:'A LAI estabelece que a transparência é a regra e o sigilo é a exceção na administração pública.',
+ {q:'Qual lei garante acesso a informações públicas?',
+  o:['Lei de Acesso à Informação','LGPD','Lei Brasileira de Inclusão','Lei Orgânica da Saúde'],
+  e:'A LAI (12.527/2011) estabelece que a transparência é a regra e o sigilo, a exceção.',
   r:'Lei 12.527/2011'},
- {q:'O serviço quer usar inteligência artificial para apoiar registros e triagem. Qual cuidado de governança é essencial?',
-  o:['Supervisão humana, proteção dos dados dos pacientes e transparência sobre o uso','Usar sem avisar ninguém, porque agiliza o atendimento','Colar dados identificados de pacientes em qualquer ferramenta gratuita'],
-  e:'A IA pode apoiar, mas a decisão e a responsabilidade seguem com o profissional. É preciso proteger dados (LGPD), validar o desempenho da ferramenta e informar a equipe e os pacientes.',
-  r:'Lei 13.709/2018 (LGPD); boas práticas de governança'}
+ {q:'Ao usar inteligência artificial no serviço, o essencial é:',
+  o:['Supervisão humana e proteção de dados','Usar sem avisar a equipe','Inserir dados identificados em qualquer app','Substituir a avaliação do profissional'],
+  e:'A IA apoia, mas a decisão e a responsabilidade seguem com o profissional. Proteja os dados (LGPD).',
+  r:'Lei 13.709/2018 (LGPD)'}
 ]};
 
 /* Sorte ou revés. tipo: mov (casas), pts (pontos), skip (perde a próxima rodada) */
@@ -580,6 +605,77 @@ function shapeEl(i, cls){
   return h('span', {class:`${cls} shape-${i} p${i}`}, h('span',{class:'sh',text:String(i+1)}));
 }
 
+
+/* =========================================================
+   GUIA (avatar ilustrativo)
+   ========================================================= */
+const ACERTOS = ['Isso aí!','Boa! É assim que se decide em saúde.','Mandou bem!','Certo! Leiam a explicação em voz alta.'];
+const ERROS = ['Sem problema, errar faz parte de aprender.','Quase! A explicação ajuda na próxima.','Vamos aprender com essa: leiam a explicação.'];
+const DICAS = [
+ 'Separar o resíduo na origem reduz custo e risco.',
+ 'Nenhuma economia vale mais que a segurança do paciente.',
+ 'Equidade é dar mais a quem mais precisa.',
+ 'Dado de saúde é sensível. Compartilhe só pelos canais oficiais.',
+ 'Notificar um incidente é aprender, e não culpar.',
+ 'Quem cuida também precisa de cuidado: pausas importam.',
+ 'ESG é decisão do dia a dia, não só de quem administra.',
+ 'Transparência gera confiança: mostre dados e metas.'
+];
+let dicaFila = [];
+function nextDica(){ if(!dicaFila.length) dicaFila = shuffle(DICAS); return dicaFila.pop(); }
+
+function avatarSVG(m){
+  const acena = (m==='oi' || m==='feliz');
+  const olhos = m==='feliz'
+    ? '<path d="M80 96 Q86 89 92 96" fill="none" stroke="#2B1E2F" stroke-width="3.5" stroke-linecap="round"/><path d="M108 96 Q114 89 120 96" fill="none" stroke="#2B1E2F" stroke-width="3.5" stroke-linecap="round"/>'
+    : '<ellipse cx="86" cy="96" rx="4.5" ry="5.5" fill="#2B1E2F"/><ellipse cx="114" cy="96" rx="4.5" ry="5.5" fill="#2B1E2F"/><circle cx="87.5" cy="94" r="1.6" fill="#fff"/><circle cx="115.5" cy="94" r="1.6" fill="#fff"/>';
+  const sob = m==='pensa'
+    ? 'M79 85 Q86 82 93 85 M107 81 Q114 75 121 81'
+    : m==='incentivo' ? 'M79 87 Q86 82 93 84 M107 84 Q114 82 121 87'
+    : 'M79 85 Q86 81 93 85 M107 85 Q114 81 121 85';
+  const boca = {
+    oi:'<path d="M91 110 Q100 119 109 110" fill="none" stroke="#8A3B4A" stroke-width="3.5" stroke-linecap="round"/>',
+    feliz:'<path d="M88 108 Q100 126 112 108 Z" fill="#8A3B4A"/>',
+    pensa:'<path d="M94 113 Q100 111 106 113" fill="none" stroke="#8A3B4A" stroke-width="3.5" stroke-linecap="round"/>',
+    incentivo:'<path d="M92 111 Q100 117 108 111" fill="none" stroke="#8A3B4A" stroke-width="3.5" stroke-linecap="round"/>'
+  }[m] || '';
+  const braco = acena ? '<g class="braco"><path d="M148 172 L170 130" stroke="#DCCFE3" stroke-width="22" stroke-linecap="round"/><path d="M148 172 L170 130" stroke="#FFFFFF" stroke-width="17" stroke-linecap="round"/><circle cx="171" cy="122" r="10" fill="#F6D9C6"/></g>' : '';
+  return '<svg viewBox="0 20 200 200" aria-hidden="true" focusable="false">'
+    + '<path d="M46 104 C40 40 160 40 154 104 L160 172 L40 172 Z" fill="#1F1622"/>'
+    + braco
+    + '<path d="M30 230 C30 172 62 150 100 150 C138 150 170 172 170 230 Z" fill="#FFFFFF" stroke="#DCCFE3" stroke-width="3"/>'
+    + '<path d="M82 152 L100 192 L118 152 Z" fill="#5B2A6E"/>'
+    + '<path d="M82 152 L96 200 M118 152 L104 200" stroke="#DCCFE3" stroke-width="3" fill="none"/>'
+    + '<rect x="90" y="128" width="20" height="28" rx="8" fill="#F1CDB8"/>'
+    + '<ellipse cx="100" cy="92" rx="38" ry="42" fill="#F6D9C6"/>'
+    + '<path d="M60 92 C52 34 148 34 140 92 C128 78 110 70 94 66 C82 74 68 84 60 92Z" fill="#1F1622"/>'
+    + '<circle cx="76" cy="108" r="6" fill="#F6D5CF" opacity=".85"/><circle cx="124" cy="108" r="6" fill="#F6D5CF" opacity=".85"/>'
+    + olhos
+    + '<path d="'+sob+'" fill="none" stroke="#1F1622" stroke-width="3" stroke-linecap="round"/>'
+    + boca
+    + '<path d="M84 152 C78 190 122 190 116 152" fill="none" stroke="#5E4E63" stroke-width="4" stroke-linecap="round"/>'
+    + '<circle cx="100" cy="190" r="8" fill="#F2A93B" stroke="#5E4E63" stroke-width="3"/>'
+    + '</svg>';
+}
+
+function makeGuia(msg, mood, grande){
+  const av = h('button',{type:'button',class:'av','aria-label':'Tocar no guia para ver uma dica'});
+  const bal = h('div',{class:'balao',role:'status'});
+  const el = h('div',{class:'guia'+(grande?' grande':'')}, av, bal);
+  const g = { el, say(t, m){
+    bal.textContent = t; av.innerHTML = avatarSVG(m||'oi');
+    av.classList.remove('pula'); void av.offsetWidth; av.classList.add('pula');
+  }};
+  av.addEventListener('click', () => g.say('Dica: '+nextDica(), 'pensa'));
+  g.say(msg, mood);
+  return g;
+}
+function miniAvatar(m){ const s = h('span',{class:'miniav'}); s.innerHTML = avatarSVG(m); return s; }
+
+let guiaGame = null, pendente = null;
+function reagir(t, m){ pendente = {t, m}; if(guiaGame) guiaGame.say(t, m); }
+const pick = a => a[Math.floor(Math.random()*a.length)];
+
 /* =========================================================
    PREPARAR PARTIDA
    ========================================================= */
@@ -611,6 +707,7 @@ document.querySelectorAll('#boxQtd [data-q]').forEach(b => b.addEventListener('c
 }));
 $('#modoSolo').addEventListener('click', () => setModo('solo'));
 $('#modoEquipes').addEventListener('click', () => setModo('equipes'));
+(function(){ const g = makeGuia('Oi! Eu sou o guia da Trilha ESG. Toque em mim para ver uma dica.','oi',true); const box=$('#guiaHome'); box.append(g.el, h('p',{class:'legenda-av',text:'Avatar ilustrativo gerado por IA'})); })();
 $('#btnJogar').addEventListener('click', () => { renderNomes(); showScreen('setup'); });
 $('#setupVoltar').addEventListener('click', () => showScreen('home'));
 $('#btnComecar').addEventListener('click', () => {
@@ -628,6 +725,7 @@ $('#btnComecar').addEventListener('click', () => {
    PARTIDA
    ========================================================= */
 function newGame(nomes){
+  guiaGame = null; pendente = null;
   G = {
     players: nomes.map((nome,i) => ({
       i, nome, pos:0, pts:0, finished:false, rank:0, skip:false,
@@ -719,6 +817,11 @@ function startTurn(){
   $('#btnRolar').disabled = false;
   if(!$('#die').children.length) dieFace(1);
   placeAll();
+  const vezTxt = G.players.length>1 ? 'Vez de '+p.nome+'. Role o dado!' : 'Role o dado!';
+  if(!guiaGame){ $('#guiaGame').innerHTML=''; guiaGame = makeGuia(vezTxt,'oi'); $('#guiaGame').append(guiaGame.el); }
+  else if(pendente){ guiaGame.say(pendente.t+' '+vezTxt, pendente.m); }
+  else guiaGame.say(vezTxt,'oi');
+  pendente = null;
 }
 
 $('#btnRolar').addEventListener('click', async () => {
@@ -779,29 +882,34 @@ async function cartaPergunta(p, k){
   const q = bank[draw(k, bank.length)];
   const opts = shuffle(q.o.map((txt,i)=>({txt, ok:i===0})));
   await openSheet((body, close) => {
+    let valor = 10, respondeu = false;
     const ops = h('div',{class:'ops',role:'group','aria-label':'Alternativas'});
     const fb = h('div',{class:'acoes2'});
+    const descartadas = new Set();
     const btns = opts.map((o,i) => {
       const b = h('button',{type:'button',class:'opt'}, h('span',{class:'k',text:'ABCD'[i]}), h('span',{text:o.txt}));
       b.addEventListener('click', () => {
+        respondeu = true;
+        if(dicaBtn) dicaBtn.remove();
         btns.forEach((x,j) => {
           x.disabled = true;
           if(opts[j].ok){ x.classList.add('ok'); x.lastChild.append(h('span',{class:'tag',text:'Resposta correta'})); }
           else if(x===b){ x.classList.add('no'); x.lastChild.append(h('span',{class:'tag',text:'Sua resposta'})); }
         });
         const st = p.stats[k]; st.a++;
-        let msg = '', extra = '';
+        let msg = '', extra = '', humor = 'incentivo';
         if(o.ok){
-          st.c++; addPts(p,10); msg = 'Acertou! +10 pontos';
+          st.c++; addPts(p,valor); msg = 'Acertou! +'+valor+' pontos'; humor = 'feliz';
           if(!p.seals[k]){
             p.seals[k] = true; msg += ' e selo '+PIL[k].nome;
             if(p.seals.E && p.seals.S && p.seals.G && !p.bonusSeals){ p.bonusSeals = true; addPts(p,15); extra = 'Relatório ESG completo: os três selos valem +15 pontos.'; }
           }
           renderPlacar();
         } else { msg = 'Não foi desta vez. Sem pontos nesta carta.'; }
+        reagir(o.ok ? pick(ACERTOS) : pick(ERROS), humor);
         fb.append(
           h('div',{class:'feedback',role:'status'},
-            h('div',{class:'tit',text:msg}),
+            h('div',{class:'fbtop'}, miniAvatar(humor), h('div',{class:'tit',text:msg})),
             h('p',{text:q.e}),
             extra ? h('p',{text:extra,style:'margin-top:6px;font-weight:700'}) : null,
             h('span',{class:'ref',text:'Fonte: '+q.r})),
@@ -812,9 +920,24 @@ async function cartaPergunta(p, k){
       return b;
     });
     ops.append(...btns);
+    let dicaBtn = null;
+    if(!p.hintUsed){
+      dicaBtn = h('button',{type:'button',class:'btn ghost block dica'}, miniAvatar('pensa'), h('span',{text:'Pedir dica ao guia (carta vale 5 pontos)'}));
+      dicaBtn.addEventListener('click', () => {
+        if(respondeu) return;
+        p.hintUsed = true; valor = 5;
+        const erradas = btns.map((_,i)=>i).filter(i => !opts[i].ok);
+        shuffle(erradas).slice(0, opts.length>=4 ? 2 : 1).forEach(i => {
+          btns[i].disabled = true; btns[i].classList.add('riscada');
+          btns[i].lastChild.append(h('span',{class:'tag',text:'Descartada pelo guia'}));
+        });
+        dicaBtn.replaceWith(h('p',{class:'nota',role:'status',text:'Dica usada: tirei alternativas. Esta carta vale 5 pontos. Cada jogador tem uma dica por partida.'}));
+        dicaBtn = null;
+      });
+    }
     body.append(
       h('div',{class:'faixa '+k}, h('span',{class:'letra',text:k}), h('span',{text:'Pilar '+PIL[k].nome+' · '+p.nome})),
-      h('div',{class:'corpo'}, h('h3',{id:'sheetTitulo',class:'pergunta',text:q.q}), ops, fb)
+      h('div',{class:'corpo'}, h('h3',{id:'sheetTitulo',class:'pergunta',text:q.q}), ops, dicaBtn, fb)
     );
   });
 }
@@ -835,6 +958,7 @@ async function cartaSorte(p){
         h('button',{type:'button',class:'btn primary block',text:'Aplicar',onclick:close})
       ));
   });
+  reagir(c.t==='Sorte' ? 'Sorte! Aproveite o impulso.' : 'Revés acontece. Respire e siga em frente.', c.t==='Sorte' ? 'feliz' : 'incentivo');
   if(ef.pts) addPts(p, ef.pts);
   if(ef.skip) p.skip = true;
   if(ef.mov){
@@ -855,7 +979,7 @@ async function cartaVivencia(p){
       let s = 60; ini.disabled = true;
       iv = setInterval(() => { s--; tm.textContent = Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); if(s<=0){ clearInterval(iv); tm.textContent = 'Tempo!'; ini.disabled = false; } }, 1000);
     });
-    const fim = (ganha) => { clearInterval(iv); if(ganha) addPts(p,10); close(); };
+    const fim = (ganha) => { clearInterval(iv); if(ganha){ addPts(p,10); reagir('Boa conversa! Situações reais ensinam muito.','feliz'); } close(); };
     body.append(
       h('div',{class:'faixa V'}, h('span',{class:'letra',text:'✎'}), h('span',{text:'Vivência · '+p.nome})),
       h('div',{class:'corpo'},
@@ -874,6 +998,7 @@ async function chegou(p){
   if(p.finished) return;
   p.finished = true; p.rank = ++G.finishCount;
   if(G.endFlag===null) G.endFlag = p.i;
+  reagir('Relatório entregue! Parabéns!','feliz');
   const bonus = G.players.length===1 ? 30 : ({1:30,2:20,3:10,4:5}[p.rank]);
   addPts(p, bonus);
   await openSheet((body, close) => {
@@ -928,6 +1053,8 @@ function finishGame(){
   const ps = G.players.slice().sort((a,b) => b.pts-a.pts || (a.rank||99)-(b.rank||99));
   const solo = ps.length===1;
   $('#resTitulo').textContent = solo ? 'Seu resultado' : 'Resultado da trilha';
+  $('#guiaRes').innerHTML = '';
+  $('#guiaRes').append(makeGuia(solo ? 'Trilha concluída! Veja como você foi em cada pilar.' : 'Fim de jogo! Parabéns a todas as equipes.','feliz',true).el);
   $('#resSub').textContent = solo ? 'Veja como você foi em cada pilar.' : 'Pontuação final e desempenho de cada equipe por pilar.';
   const box = $('#rank'); box.innerHTML = '';
   ps.forEach((p,idx) => {
@@ -980,7 +1107,7 @@ if(window.claude && window.claude.hot){
 }
 function boot(d){
   if(d && d.G){
-    G = d.G; G.phase = 'roll'; rolling = false;
+    G = d.G; G.phase = 'roll'; rolling = false; guiaGame = null; pendente = null;
     buildBoard(); showScreen('game'); startTurn();
   } else { showScreen('home'); }
 }
