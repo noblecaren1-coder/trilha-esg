@@ -282,7 +282,7 @@ details[open] summary::after{content:'−'}
         </ol>
         <p class="nota">As cartas ficam no início do código da página, em listas simples, e podem ser editadas. Uma partida leva em torno de 10 a 25 minutos, conforme o número de equipes (estimativa).</p>
         <h3>Uso de inteligência artificial</h3>
-        <p>Jogo e avatar ilustrativo elaborados com apoio de IA (Claude, Anthropic). As cartas devem ser conferidas e validadas pelas autoras antes do uso em aula.</p>
+        <p>Jogo elaborado com apoio de IA (Claude, Anthropic). As cartas devem ser conferidas e validadas pelas autoras antes do uso em aula.</p>
       </div>
     </details>
 
@@ -762,7 +762,7 @@ document.querySelectorAll('#boxQtd [data-q]').forEach(b => b.addEventListener('c
 }));
 $('#modoSolo').addEventListener('click', () => setModo('solo'));
 $('#modoEquipes').addEventListener('click', () => setModo('equipes'));
-(function(){ const g = makeGuia('Oi! Eu sou a Tri, guia da Trilha ESG. Toque em mim para ver uma dica.','oi',true); const box=$('#guiaHome'); box.append(g.el, h('p',{class:'legenda-av',text:'Tri, avatar ilustrativo gerado por IA'})); })();
+(function(){ const g = makeGuia('Oi! Eu sou a Tri, guia da Trilha ESG. Toque em mim para ver uma dica.','oi',true); const box=$('#guiaHome'); box.append(g.el); })();
 $('#btnJogar').addEventListener('click', () => { renderNomes(); showScreen('setup'); });
 $('#setupVoltar').addEventListener('click', () => showScreen('home'));
 $('#btnComecar').addEventListener('click', () => {
